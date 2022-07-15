@@ -2,105 +2,311 @@ package me.cubixor.telloapi.api;
 
 public abstract class DroneStatus {
 
-    protected int batteryLow;
-    protected int batteryLower;
+    protected boolean batteryLow;
+    protected boolean batteryLower;
     protected int batteryPercentage;
-    protected int batteryState;
+    protected boolean batteryState;
     protected int cameraState;
-    protected int downVisualState;
+    protected boolean downVisualState;
     protected int droneBatteryLeft;
     protected int droneFlyTimeLeft;
-    protected int droneHover;
-    protected int eMOpen;
-    protected int eMSky;
-    protected int eMgroud;
+    protected boolean droneHover;
+    protected boolean eMOpen;
+    protected boolean eMSky;
+    protected boolean eMGround;
     protected int eastSpeed;
     protected int electricalMachineryState;
-    protected int factoryMode;
+    protected boolean factoryMode;
     protected int flyMode;
-    //protected int flySpeed;
     protected int flyTime;
-    protected int frontIn;
-    protected int frontLSC;
-    protected int frontOut;
-    protected int gravityState;
+    protected boolean frontIn;
+    protected boolean frontLSC;
+    protected boolean frontOut;
+    protected boolean gravityState;
     protected int groundSpeed;
     protected int height;
     protected int imuCalibrationState;
-    protected int imuState;
+    protected boolean imuState;
     protected int northSpeed;
-    protected int outageRecording;
-    protected int powerState;
-    protected int pressureState;
-    //protected int smartVideoExitMode;
-    protected int temperatureHeight;
+    protected boolean outageRecording;
+    protected boolean powerState;
+    protected boolean pressureState;
+    protected boolean temperatureHeight;
     protected int throwFlyTimer;
-    protected int windState;
+    protected boolean windState;
 
 
-    public abstract int getBatteryLow();
+    /**
+     * Low battery warning.
+     *
+     * @return true when battery is below low battery threshold (probably)
+     * @see PacketSender#sendSetLowBatteryThresholdPacket(short)
+     */
+    public abstract boolean isBatteryLow();
 
-    public abstract int getBatteryLower();
+    /**
+     * Critical battery level warning.
+     *
+     * @return true when the battery is at critical level and drone initiates auto landing.
+     */
+    public abstract boolean isBatteryCritical();
 
+    /**
+     * Battery percentage
+     *
+     * @return battery level in percents (from 0 to 100)
+     */
     public abstract int getBatteryPercentage();
 
-    public abstract int getBatteryState();
+    /**
+     * Battery error.
+     *
+     * @return true when a battery error was encountered.
+     */
+    public abstract boolean isBatteryError();
 
-    public abstract int getCameraState();
+    /**
+     * Camera sensor error.
+     *
+     * @return true when a camera sensor error was encountered.
+     */
+    public abstract int isCameraError();
 
-    public abstract int getDownVisualState();
+    /**
+     * Downward vision sensor error.
+     * True when a downward vision sensor error was encountered.
+     */
+    public abstract boolean isDownwardVisionError();
 
+    /**
+     * Not used anywhere in the original app
+     * Seems to be always 0
+     * TODO Check if any data is sent to drone and how to read it
+     *
+     * @return ?
+     */
     public abstract int getDroneBatteryLeft();
 
+    /**
+     * Not used anywhere in the original app
+     * Data is sent, no clue how to read it (3800~4200)
+     * TODO Check how to read it
+     *
+     * @return ?
+     */
     public abstract int getDroneFlyTimeLeft();
 
-    public abstract int getDroneHover();
+    /**
+     * Not used anywhere in the original app
+     * Seems fo be always 0
+     * TODO Check if any data is sent to drone and what it represents
+     *
+     * @return ?
+     */
+    public abstract boolean isDroneHovering();
 
-    public abstract int geteMOpen();
+    /**
+     * True if drone is on ground (but I'm not 100% sure)
+     *
+     * @return ?
+     */
+    public abstract boolean iseMOpen();
 
-    public abstract int geteMSky();
+    /**
+     * True if drone is flying (but I'm not 100% sure)
+     *
+     * @return true if drone is flying
+     */
+    public abstract boolean iseMSky();
 
-    public abstract int geteMgroud();
+    /**
+     * Not used anywhere in the original app
+     * Sometimes true
+     * TODO Check what data represents
+     *
+     * @return ?
+     */
+    public abstract boolean iseMGround();
 
+    /**
+     * Drone speed in east axis, used to calculate total speed.
+     *
+     * @return drone speed in east axis
+     */
     public abstract int getEastSpeed();
 
+
+    /**
+     * Electrical machinery state
+     * All kinds of error codes
+     * <p>
+     * Known error id's:
+     * - 5, 24, 74 = IMU errors, calibration needed, contact support
+     * - 14 = Low battery, takeoff failed
+     * - 21, 30, 94, 99, 100 = Keep drone stationary and level, check motor and propeller, contact support
+     * - 125, 127 = Collision detected
+     * - 204 = Updating, takeoff failed
+     * <p>
+     * If an unknown error is sent by a drone it's just displayed on the screen
+     * TODO Search for other error codes
+     *
+     * @return error codes
+     */
     public abstract int getElectricalMachineryState();
 
-    public abstract int getFactoryMode();
+    /**
+     * Not used anywhere in the original app
+     * Maybe if the drone was reset to factory settings or turned on first time? (hard to check for now)
+     * TODO Check if any data is sent to drone and what it represents
+     *
+     * @return ?
+     */
+    public abstract boolean isInFactoryMode();
 
+    /**
+     * Represents tello flight mode id.
+     * <p>
+     * Known fly modes:
+     * - 1 = no VPS
+     * - 12 = landing (or hand land?)
+     * - 48 = ?
+     * <p>
+     * TODO Search for other fly modes
+     *
+     * @return fly mode id
+     */
     public abstract int getFlyMode();
 
+    /**
+     * Not used anywhere in the original app
+     * Fly time, seems to increase every status packet
+     * TODO Check how to read the data
+     *
+     * @return ?
+     */
     public abstract int getFlyTime();
 
-    public abstract int getFrontIn();
+    /**
+     * Not used anywhere in the original app
+     * Seems to be always false
+     * TODO Check if any data is sent to drone and what it represents
+     *
+     * @return ?
+     */
+    public abstract boolean isFrontIn();
 
-    public abstract int getFrontLSC();
+    /**
+     * Not used anywhere in the original app
+     * Seems to be always false
+     * TODO Check if any data is sent to drone and what it represents
+     *
+     * @return ?
+     */
+    public abstract boolean isFrontLSC();
 
-    public abstract int getFrontOut();
+    /**
+     * Not used anywhere in the original app
+     * Seems to be always false
+     * TODO Check if any data is sent to drone and what it represents
+     *
+     * @return ?
+     */
+    public abstract boolean isFrontOut();
 
-    public abstract int getGravityState();
+    /**
+     * Warning that gravity re-calibration suggested, sent after abnormal takeoff.
+     *
+     * @return true if gravity re-calibration is suggested
+     */
+    public abstract boolean isGravityError();
 
+    /**
+     * Not used anywhere in the original app
+     * Drone speed in the vertical axis
+     * Negative when flying up and positive when flying down
+     *
+     * @return drone speed relative to ground
+     */
     public abstract int getGroundSpeed();
 
+    /**
+     * Drone height, needs to be divided by 10 to get the value in meters.
+     *
+     * @return drone height in meters * 10
+     */
     public abstract int getHeight();
 
+    /**
+     * IMU calibration state and error id
+     * <p>
+     * Known error id's:
+     * - 1 = "IMU is warming up. Please wait before taking off."
+     * - 2 = IMU Error
+     *
+     * @return imu calibration state
+     */
     public abstract int getImuCalibrationState();
 
-    public abstract int getImuState();
+    /**
+     * Imu error (flight controller sensor error in the original app)
+     *
+     * @return true if imu error was encountered
+     */
+    public abstract boolean isImuError();
 
+    /**
+     * Drone speed in north axis, used to calculate total speed.
+     *
+     * @return drone speed in north axis
+     */
     public abstract int getNorthSpeed();
 
-    public abstract int getOutageRecording();
+    /**
+     * Used in the original app, no clue what it is
+     * TODO Check what it does
+     *
+     * @return ?
+     */
+    public abstract boolean isOutageRecording();
 
-    public abstract int getPowerState();
+    /**
+     * Not used anywhere in the original app
+     * TODO Check if any data is sent to drone and what it represents
+     *
+     * @return ?
+     */
+    public abstract boolean isPowerError();
 
-    public abstract int getPressureState();
+    /**
+     * Not used anywhere in the original app
+     * Probably a warning that pressure is inappropriate and you shouldn't fly (but idk how to check it).
+     * TODO Check if any data is sent to drone and what it represents
+     *
+     * @return ?
+     */
+    public abstract boolean isPressureError();
 
-    public abstract int getTemperatureHeight();
+    /**
+     * Warning that drone temperature is too high, and it will overheat soon.
+     *
+     * @return true when the drone temperature is too high
+     */
+    public abstract boolean isOverheat();
 
+    /**
+     * Throw fly timer
+     *
+     * @return amount of time in which throw fly mode will be active
+     * @see PacketSender#sendThrowTakeoffPacket()
+     */
     public abstract int getThrowFlyTimer();
 
-    public abstract int getWindState();
+    /**
+     * Warning that it's too windy, you shouldn't fly and vps may fail.
+     *
+     * @return true when it's too windy
+     */
+    public abstract boolean isTooWindy();
 
     @Override
     public String toString() {
@@ -116,7 +322,7 @@ public abstract class DroneStatus {
                 ", droneHover=" + droneHover +
                 ", eMOpen=" + eMOpen +
                 ", eMSky=" + eMSky +
-                ", eMgroud=" + eMgroud +
+                ", eMgroud=" + eMGround +
                 ", eastSpeed=" + eastSpeed +
                 ", electricalMachineryState=" + electricalMachineryState +
                 ", factoryMode=" + factoryMode +

@@ -2,6 +2,12 @@ package me.cubixor.telloapi.api;
 
 public abstract class VideoInfo {
 
+    private static final float[] exposureValues = new float[]{-3.0f, -2.7f, -2.3f, -2.0f, -1.7f, -1.3f, -1.0f, -0.7f, -0.3f, 0f, 0.3f, 0.7f, 1.0f, 1.3f, 1.7f, 2.0f, 2.3f, 2.7f, 3.0f};
+
+    public static float[] getExposureValues() {
+        return exposureValues;
+    }
+
     public abstract BitRate getBitRate();
 
     public abstract float getExposure();

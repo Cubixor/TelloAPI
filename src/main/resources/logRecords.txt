@@ -1,0 +1,380 @@
+Op.[config]
+name	Controller
+type	1000
+Op.uint32_t	ctrl_tick 0
+Op.fp32	ctrl_pitch 0
+Op.fp32	ctrl_roll 0
+Op.fp32	ctrl_yaw 0
+Op.fp32	ctrl_thr 0
+Op.fp32	ctrl_thr 0
+Op.uint8_t	ctrl_mode 0
+Op.uint8_t	mode_switch 0
+Op.uint8_t	motor_state 0
+Op.uint8_t	sig_level 0
+Op.uint8_t	ctrl_level 0
+Op.uint8_t	sim_model 0
+Op.uint16_t	max_height 0
+Op.uint16_t	max_radius 0
+Op.fp32	D2H_x 0
+Op.fp32	D2H_y 0
+Op.uint8_t	act_req_id 0
+Op.uint8_t	act_act_id 0
+Op.uint8_t	cmd_mod 0
+Op.uint8_t	mod_req_id 0
+Op.uint8_t	is_soaring_up 0
+Op.uint8_t	eagle_temp_level 0
+Op.[config]
+name	aircraft_condition
+type	1001
+Op.uint8_t	int_fsm 0
+Op.uint8_t	fsm_state 0
+Op.uint8_t	last_fsm 0
+Op.uint8_t	near_gnd 0
+Op.uint8_t	UP_state 0
+Op.fp32	UP_acc_t 0
+Op.fp32	UP_TF_t 0
+Op.uint8_t	land_state 0
+Op.int16_t	safe_fltr 0
+Op.[config]
+name	serial_api_inputs
+type	1002
+Op.uint8_t	sdk_ctrl_F 0
+Op.int16_t	sdk_roll_x 0
+Op.int16_t	sdk_pitch_y 0
+Op.int16_t	sdk_thr_z 0
+Op.int16_t	sdk_yaw 0
+Op.int16_t	sdk_fdfd_x 0
+Op.int16_t	sdk_fdfd_y 0
+Op.uint8_t	ctrl_dev 0
+Op.uint8_t	sub_mode 0
+Op.uint8_t	open_req 0
+Op.uint8_t	open_ack 0
+Op.uint8_t	cmd_req 0
+Op.uint8_t	cmd_ack 0
+Op.uint8_t	avoid_E 0
+Op.uint8_t	bit_S 0
+Op.uint8_t	user_flag 0
+Op.uint8_t	app_flag 0
+Op.uint8_t	rc_cnt 0
+Op.uint8_t	sup_rc 0
+Op.uint8_t	fact_cnt 0
+Op.uint8_t	f_test 0
+Op.[config]
+name	IMU_ATTI_0
+type	2048
+Op.fp64	long0 0
+Op.fp64	lati0 0
+Op.fp32	press0 0
+Op.fp32	ax0 0
+Op.fp32	ay0 0
+Op.fp32	az0 0
+Op.fp32	wx0 0
+Op.fp32	wy0 0
+Op.fp32	wz0 0
+Op.fp32	alti0 0
+Op.fp32	qw0 0
+Op.fp32	qx0 0
+Op.fp32	qy0 0
+Op.fp32	qz0 0
+Op.fp32	agx0 0
+Op.fp32	agy0 0
+Op.fp32	agz0 0
+Op.fp32	vgx0 0
+Op.fp32	vgy0 0
+Op.fp32	vgz0 0
+Op.fp32	gbx0 0
+Op.fp32	gby0 0
+Op.fp32	gbz0 0
+Op.int16_t	mx0 0
+Op.int16_t	my0 0
+Op.int16_t	mz0 0
+Op.int16_t	tx0 0
+Op.int16_t	ty0 0
+Op.int16_t	tz0 0
+Op.uint16_t	sensor_stat0 0
+Op.uint16_t	filter_stat0 0
+Op.uint16_t	svn0 0
+Op.uint16_t	atti_cnt0 0
+Op.[config]
+name	IMU_EX_0
+type	2064
+Op.fp32	vo_vx0 0
+Op.fp32	vo_vy0 0
+Op.fp32	vo_vz0 0
+Op.fp32	vo_px0 0
+Op.fp32	vo_py0 0
+Op.fp32	vo_pz0 0
+Op.fp32	us_v0 0
+Op.fp32	us_p0 0
+Op.fp64	rtk_long0 0
+Op.fp64	rtk_lati0 0
+Op.fp32	rtk_alti0 0
+Op.uint16_t	flag_navi0 0
+Op.uint16_t	flag_err0 0
+Op.uint16_t	flag_rsv0 0
+Op.uint16_t	ex_cnt0 0
+Op.[config]
+name	ATTI_MINI0
+type	2208
+Op.fp32	s_qw0 0
+Op.fp32	s_qx0 0
+Op.fp32	s_qy0 0
+Op.fp32	s_qz0 0
+Op.fp32	s_pgz0 0
+Op.fp32	s_vgz0 0
+Op.fp32	s_agz0 0
+Op.uint32_t	s_rsv00 0
+Op.uint32_t	s_rsv10 0
+Op.uint32_t	s_cnt0 0
+Op.[config]
+name	ctrl_vert_debug
+type	1200
+Op.uint8_t	vert_mode 0
+Op.uint8_t	vert_state 0
+Op.uint8_t	vert_flag 0
+Op.fp32	vert_pos 0
+Op.fp32	vert_brk_T 0
+Op.uint8_t	near_bound 0
+Op.fp32	true_h_lmt 0
+Op.uint8_t	hit_gnd 0
+Op.uint8_t	high_os_F 0
+Op.uint8_t	low_os_F 0
+Op.uint8_t	ap_high_os_F 0
+Op.uint8_t	gnd_os_F 0
+Op.uint8_t	rf_os_F 0
+Op.uint8_t	v_lmt_os_F 0
+Op.uint8_t	landing_type 0
+Op.[config]
+name	ctrl_vel_vert_debug
+type	1202
+Op.uint8_t	vel_tag 0
+Op.int16_t	vel_cmd 0
+Op.int16_t	vel_before 0
+Op.int16_t	vel_after 0
+Op.int16_t	vel_fdbk 0
+Op.uint8_t	gnd_en 0
+Op.uint8_t	gnd_work 0
+Op.uint8_t	roof_en 0
+Op.uint8_t	roof_work 0
+Op.uint8_t	low_en 0
+Op.uint8_t	low_work 0
+Op.uint8_t	high_en 0
+Op.uint8_t	high_work 0
+Op.uint8_t	AP_work 0
+Op.uint8_t	AP_en0 0
+Op.uint8_t	AP_en1 0
+Op.uint8_t	AP_en2 0
+Op.uint8_t	hit_en 0
+Op.uint8_t	hit_work 0
+Op.int16_t	hit_norm 0
+Op.int16_t	hit_damp 0
+Op.uint8_t	down_en 0
+Op.uint8_t	down_work 0
+Op.int16_t	down_norm 0
+Op.int16_t	down_damp 0
+Op.[config]
+name	ctrl_acc_vert_debug
+type	1203
+Op.uint8_t	acc_tag 0
+Op.int16_t	acc_cmd 0
+Op.int16_t	acc_fdbk 0
+Op.int16_t	thr_cmd 0
+Op.[config]
+name	ctrl_horiz_debug
+type	1300
+Op.uint8_t	horiz_mode 0
+Op.uint8_t	hov_state 0
+Op.uint8_t	hov_flag 0
+Op.fp32	hov_px 0
+Op.fp32	hov_py 0
+Op.fp32	hov_brk_T 0
+Op.fp32	hov_cfrm_T 0
+Op.fp32	pos_cmdx 0
+Op.fp32	pos_cmdy 0
+Op.fp32	vel_cmdx 0
+Op.fp32	vel_cmdy 0
+Op.uint8_t	h_api_mode 0
+Op.uint8_t	h_api_frm 0
+Op.fp32	tilt_cmd_x 0
+Op.fp32	tilt_cmd_y 0
+Op.uint8_t	v_ctrl_mod 0
+Op.uint8_t	trs_f_req 0
+Op.uint8_t	trs_f_flg 0
+Op.uint8_t	trs_mod 0
+Op.uint8_t	trs_lck_st 0
+Op.fp32	trs_p_cmd 0
+Op.fp32	trs_v_cmd 0
+Op.fp32	trs_p_lck 0
+Op.fp32	trs_lck_T 0
+Op.uint8_t	emg_brk_F 0
+Op.uint8_t	near_bnd 0
+Op.uint16_t	mode_atti_limit 0
+Op.uint16_t	avoid_atti_limit 0
+Op.uint16_t	gimbal_atti_limit 0
+Op.uint16_t	vo_lost_atti_limit 0
+Op.uint16_t	compen_atti_limit 0
+Op.uint16_t	gesture_atti_limit 0
+Op.uint16_t	on_ground_atti_limit 0
+Op.uint16_t	braking_atti_limit 0
+Op.uint16_t	low_level_atti_limit 0
+Op.uint16_t	atti_compen_for_wind 0
+Op.uint16_t	saturation_atti_limit 0
+Op.uint16_t	bat_atti_limit 0
+Op.uint16_t	uncer_k_adjust_atti_limit 0
+Op.uint16_t	takeoff_limit 0
+Op.uint16_t	final_atti_limit 0
+Op.uint8_t	avoid_en 0
+Op.uint8_t	flw_gmb_F 0
+Op.uint8_t	in_flw_gmb 0
+Op.int16_t	GF_tgt_yaw 0
+Op.int16_t	GF_cur_yaw 0
+Op.fp32	G_tgt_gyro 0
+Op.uint8_t	gmb_mode 0
+Op.fp32	gmb_jnt_p 0
+Op.fp32	gmb_jnt_y 0
+Op.fp32	gmb_on 0
+Op.uint8_t	gmb_pos 0
+Op.uint8_t	track_en 0
+Op.fp32	trck_yaw_v 0
+Op.int16_t	CL_tors 0
+Op.uint8_t	ap_os_F 0
+Op.uint8_t	avd_ob_os_F 0
+Op.uint8_t	H_fence_os_F 0
+Op.uint8_t	R_os_F 0
+Op.uint8_t	h_lmt_os_F 0
+Op.uint16_t	true_rad_lmt 0
+Op.[config]
+name	fly_limit_vel_debug
+type	1303
+Op.uint8_t	rad_en 0
+Op.uint8_t	rad_work 0
+Op.int16_t	rad_dir_x 0
+Op.int16_t	rad_dir_y 0
+Op.int16_t	rad_dis_to_obj 0
+Op.uint8_t	AP0_en 0
+Op.uint8_t	AP0_work 0
+Op.int16_t	AP0_dir_x 0
+Op.int16_t	AP0_dir_y 0
+Op.int16_t	AP0_dis_to_obj 0
+Op.uint8_t	AP1_en 0
+Op.uint8_t	AP1_work 0
+Op.int16_t	AP1_dir_x 0
+Op.int16_t	AP1_dir_y 0
+Op.int16_t	AP1_dis_to_obj 0
+Op.uint8_t	AP2_en 0
+Op.uint8_t	AP2_work 0
+Op.int16_t	AP2_dir_x 0
+Op.int16_t	AP2_dir_y 0
+Op.int16_t	AP2_dis_to_obj 0
+Op.uint8_t	AO0_en 0
+Op.uint8_t	AO0_work 0
+Op.int16_t	AO0_dir_x 0
+Op.int16_t	AO0_dir_y 0
+Op.int16_t	AO0_dis_to_obj 0
+Op.uint8_t	AO1_en 0
+Op.uint8_t	AO1_work 0
+Op.int16_t	AO1_dir_x 0
+Op.int16_t	AO1_dir_y 0
+Op.int16_t	AO1_dis_to_obj 0
+Op.uint8_t	AO2_en 0
+Op.uint8_t	AO2_work 0
+Op.int16_t	AO2_dir_x 0
+Op.int16_t	AO2_dir_y 0
+Op.int16_t	AO2_dis_to_obj 0
+Op.uint8_t	AO3_en 0
+Op.uint8_t	AO3_work 0
+Op.int16_t	AO3_dir_x 0
+Op.int16_t	AO3_dir_y 0
+Op.int16_t	AO3_dis_to_obj 0
+Op.[config]
+name	ctrl_horiz_atti_debug
+type	1304
+Op.uint8_t	atti_tag 0
+Op.uint8_t	tors_type 0
+Op.fp32	tgt_tors 0
+Op.fp32	tgt_tilt_x 0
+Op.fp32	tgt_tilt_y 0
+Op.fp32	tgt_body_x 0
+Op.fp32	tgt_body_y 0
+Op.fp32	cur_tors 0
+Op.fp32	cur_tilt_x 0
+Op.fp32	cur_tilt_y 0
+Op.[config]
+name	ctrl_horiz_ang_vel_debug
+type	1305
+Op.uint8_t	gyro_tag 0
+Op.fp32	gyro_cmdx 0
+Op.fp32	gyro_cmdy 0
+Op.fp32	gyro_cmdz 0
+Op.fp32	gyro_fbkx 0
+Op.fp32	gyro_fbky 0
+Op.fp32	gyro_fbkz 0
+Op.fp32	smoothed_ang_vel[0] 0
+Op.fp32	smoothed_ang_vel[1] 0
+Op.fp32	smoothed_ang_vel[2] 0
+Op.[config]
+name	ctrl_allocation_debug
+type	1306
+Op.int16_t	raw_tilt_x 0
+Op.int16_t	raw_tilt_y 0
+Op.int16_t	raw_tors 0
+Op.int16_t	raw_lift 0
+Op.int16_t	fix_tilt_x 0
+Op.int16_t	fix_tilt_y 0
+Op.int16_t	fix_tor 0
+Op.int16_t	fix_lift 0
+Op.int16_t	bound_max 0
+Op.int16_t	bound_min 0
+Op.int16_t	limit_tors_scale 0
+Op.[config]
+name	ctrl_horiz_motor_debug
+type	1307
+Op.uint16_t	pwm1 0
+Op.uint16_t	pwm2 0
+Op.uint16_t	pwm3 0
+Op.uint16_t	pwm4 0
+Op.uint16_t	pwm5 0
+Op.uint16_t	pwm6 0
+Op.uint16_t	pwm7 0
+Op.uint16_t	pwm8 0
+Op.[config]
+name	battery_info
+type	1710
+Op.float	Vol 0
+Op.uint16_t	BatCap 0
+Op.[config]
+name	ns_data_debug
+type	10085
+Op.fp32	d00 0
+Op.fp32	d01 0
+Op.fp32	d02 0
+Op.fp32	d03 0
+Op.fp32	d04 0
+Op.fp32	d05 0
+Op.fp32	d06 0
+Op.fp32	d07 0
+Op.fp32	d08 0
+Op.fp32	d09 0
+Op.fp32	d10 0
+Op.fp32	d11 0
+Op.fp32	d12 0
+Op.fp32	d13 0
+Op.fp32	d14 0
+Op.fp32	d15 0
+Op.fp32	d16 0
+Op.fp32	d17 0
+Op.fp32	d18 0
+Op.fp32	d19 0
+Op.[config]
+name	ns_data_component
+type	10086
+Op.uint32_t	ns_cmpnt 0
+Op.[config]
+name	air_compensate_data
+type	10100
+Op.fp32	comp_alti 0
+Op.fp32	wind_spd 0
+Op.fp32	wind_x 0
+Op.fp32	wind_y 0
+Op.fp32	MotorSpd 0
+Op.uint8_t	vel_level 0

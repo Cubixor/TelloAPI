@@ -7,11 +7,14 @@ import java.net.InetAddress;
 public class UdpServer {
 
     private final Drone tello;
+    private final PacketDecoder packetDecoder;
 
     public UdpServer(Drone tello) {
         this.tello = tello;
+        packetDecoder = new PacketDecoder(tello);
+
         Thread udpReceiverThread = new Thread(() -> {
-            int bufferSize = 1048;
+            int bufferSize = 2048;
 
             while (true) {
                 try {
@@ -19,7 +22,7 @@ public class UdpServer {
                     tello.getSocket().receive(receivedPacket);
 
                     byte[] data = receivedPacket.getData();
-                    new PacketDecoder(tello).handlePacket(data);
+                    packetDecoder.handlePacket(data);
 
                 } catch (IOException e) {
                     e.printStackTrace();

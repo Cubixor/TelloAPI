@@ -1,3 +1,4 @@
+/*
 package me.cubixor.telloapi.video;
 
 import me.cubixor.telloapi.api.VideoInfo;
@@ -59,3 +60,4 @@ public class VideoFrameGrabber {
         frameGrabber.setImageHeight(videoMode.getHeight());
     }
 }
+*/

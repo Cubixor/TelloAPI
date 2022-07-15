@@ -1,6 +1,7 @@
 package me.cubixor.telloapi;
 
 import me.cubixor.telloapi.api.DroneState;
+import me.cubixor.telloapi.utils.Utils;
 
 import java.time.LocalDateTime;
 
@@ -9,6 +10,7 @@ public class DroneStateManager extends DroneState {
     private boolean lightOK;
     private int wifiStrength;
     private int wifiInterference;
+    private int flySpeed;
 
     private String wifiSSID;
     private String wifiPassword;
@@ -19,6 +21,11 @@ public class DroneStateManager extends DroneState {
     private int heightLimit;
     private int lowBatteryThreshold;
     private float maxAttitudeAngle;
+
+    @Override
+    public int getFlySpeed() {
+        return flySpeed;
+    }
 
     @Override
     public boolean isLightOK() {
@@ -47,50 +54,56 @@ public class DroneStateManager extends DroneState {
         this.wifiInterference = wifiInterference;
     }
 
-    public void setDroneStatus(int batteryLow, int batteryLower, int batteryPercentage, int batteryState, int cameraState, int downVisualState, int droneBatteryLeft, int droneFlyTimeLeft, int droneHover, int eMOpen, int eMSky, int eMgroud, int eastSpeed, int electricalMachineryState, int factoryMode, int flyMode, /*int flySpeed,*/ int flyTime, int frontIn, int frontLSC, int frontOut, int gravityState, int groundSpeed, int height, int imuCalibrationState, int imuState, int northSpeed, int outageRecording, int powerState, int pressureState, /*int smartVideoExitMode,*/ int temperatureHeight, int throwFlyTimer, int windState) {
-        this.batteryLow = batteryLow;
-        this.batteryLower = batteryLower;
-        this.batteryPercentage = batteryPercentage;
-        this.batteryState = batteryState;
-        this.cameraState = cameraState;
-        this.downVisualState = downVisualState;
-        this.droneBatteryLeft = droneBatteryLeft;
-        this.droneFlyTimeLeft = droneFlyTimeLeft;
-        this.droneHover = droneHover;
-        this.eMOpen = eMOpen;
-        this.eMSky = eMSky;
-        this.eMgroud = eMgroud;
-        this.eastSpeed = eastSpeed;
-        this.electricalMachineryState = electricalMachineryState;
-        this.factoryMode = factoryMode;
-        this.flyMode = flyMode;
-        //this.flySpeed = flySpeed;
-        this.flyTime = flyTime;
-        this.frontIn = frontIn;
-        this.frontLSC = frontLSC;
-        this.frontOut = frontOut;
-        this.gravityState = gravityState;
-        this.groundSpeed = groundSpeed;
-        this.height = height;
-        this.imuCalibrationState = imuCalibrationState;
-        this.imuState = imuState;
-        this.northSpeed = northSpeed;
-        this.outageRecording = outageRecording;
-        this.powerState = powerState;
-        this.pressureState = pressureState;
-        //this.smartVideoExitMode = smartVideoExitMode;
-        this.temperatureHeight = temperatureHeight;
-        this.throwFlyTimer = throwFlyTimer;
-        this.windState = windState;
+    public void updateDroneStatus(byte[] payload) {
+        height = Utils.connectBytes(payload[0], payload[1]);
+        northSpeed = Utils.connectBytes(payload[2], payload[3]);
+        eastSpeed = Utils.connectBytes(payload[4], payload[5]);
+        groundSpeed = Utils.connectBytes(payload[6], payload[7]);
+        flyTime = Utils.connectBytes(payload[8], payload[9]);
+
+        imuState = ((payload[10]) & 0x1) == 1;
+        pressureState = ((payload[10] >> 1) & 0x1) == 1;
+        downVisualState = ((payload[10] >> 2) & 0x1) == 1;
+        powerState = ((payload[10] >> 3) & 0x1) == 1;
+        batteryState = ((payload[10] >> 4) & 0x1) == 1;
+        gravityState = ((payload[10] >> 5) & 0x1) == 1;
+        windState = ((payload[10] >> 7) & 0x1) == 1;
+
+        imuCalibrationState = payload[11];
+        batteryPercentage = payload[12];
+        droneBatteryLeft = Utils.connectBytes(payload[13], payload[14]);
+        droneFlyTimeLeft = Utils.connectBytes(payload[15], payload[16]);
+
+        eMSky = ((payload[17]) & 0x1) == 1;
+        eMGround = ((payload[17] >> 1) & 0x1) == 1;
+        eMOpen = ((payload[17] >> 2) & 0x1) == 1;
+        droneHover = ((payload[17] >> 3) & 0x1) == 1;
+        outageRecording = ((payload[17] >> 4) & 0x1) == 1;
+        batteryLow = ((payload[17] >> 5) & 0x1) == 1;
+        batteryLower = ((payload[17] >> 6) & 0x1) == 1;
+        factoryMode = ((payload[17] >> 7) & 0x1) == 1;
+
+        flyMode = payload[18];
+        throwFlyTimer = payload[19];
+        cameraState = payload[20];
+        electricalMachineryState = payload[21];
+
+        frontIn = ((payload[22]) & 0x1) == 1;
+        frontOut = ((payload[22] >> 1) & 0x1) == 1;
+        frontLSC = ((payload[22] >> 2) & 0x1) == 1;
+
+        temperatureHeight = ((payload[23]) & 0x1) == 1;
+
+        flySpeed = (int) Math.sqrt(Math.pow(this.northSpeed, 2.0d) + Math.pow(this.eastSpeed, 2.0d));
     }
 
     @Override
-    public int getBatteryLow() {
+    public boolean isBatteryLow() {
         return batteryLow;
     }
 
     @Override
-    public int getBatteryLower() {
+    public boolean isBatteryCritical() {
         return batteryLower;
     }
 
@@ -100,17 +113,17 @@ public class DroneStateManager extends DroneState {
     }
 
     @Override
-    public int getBatteryState() {
+    public boolean isBatteryError() {
         return batteryState;
     }
 
     @Override
-    public int getCameraState() {
+    public int isCameraError() {
         return cameraState;
     }
 
     @Override
-    public int getDownVisualState() {
+    public boolean isDownwardVisionError() {
         return downVisualState;
     }
 
@@ -125,23 +138,23 @@ public class DroneStateManager extends DroneState {
     }
 
     @Override
-    public int getDroneHover() {
+    public boolean isDroneHovering() {
         return droneHover;
     }
 
     @Override
-    public int geteMOpen() {
+    public boolean iseMOpen() {
         return eMOpen;
     }
 
     @Override
-    public int geteMSky() {
+    public boolean iseMSky() {
         return eMSky;
     }
 
     @Override
-    public int geteMgroud() {
-        return eMgroud;
+    public boolean iseMGround() {
+        return eMGround;
     }
 
     @Override
@@ -155,7 +168,7 @@ public class DroneStateManager extends DroneState {
     }
 
     @Override
-    public int getFactoryMode() {
+    public boolean isInFactoryMode() {
         return factoryMode;
     }
 
@@ -170,22 +183,22 @@ public class DroneStateManager extends DroneState {
     }
 
     @Override
-    public int getFrontIn() {
+    public boolean isFrontIn() {
         return frontIn;
     }
 
     @Override
-    public int getFrontLSC() {
+    public boolean isFrontLSC() {
         return frontLSC;
     }
 
     @Override
-    public int getFrontOut() {
+    public boolean isFrontOut() {
         return frontOut;
     }
 
     @Override
-    public int getGravityState() {
+    public boolean isGravityError() {
         return gravityState;
     }
 
@@ -205,7 +218,7 @@ public class DroneStateManager extends DroneState {
     }
 
     @Override
-    public int getImuState() {
+    public boolean isImuError() {
         return imuState;
     }
 
@@ -215,22 +228,22 @@ public class DroneStateManager extends DroneState {
     }
 
     @Override
-    public int getOutageRecording() {
+    public boolean isOutageRecording() {
         return outageRecording;
     }
 
     @Override
-    public int getPowerState() {
+    public boolean isPowerError() {
         return powerState;
     }
 
     @Override
-    public int getPressureState() {
+    public boolean isPressureError() {
         return pressureState;
     }
 
     @Override
-    public int getTemperatureHeight() {
+    public boolean isOverheat() {
         return temperatureHeight;
     }
 
@@ -240,7 +253,7 @@ public class DroneStateManager extends DroneState {
     }
 
     @Override
-    public int getWindState() {
+    public boolean isTooWindy() {
         return windState;
     }
 

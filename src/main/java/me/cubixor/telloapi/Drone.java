@@ -1,16 +1,19 @@
 package me.cubixor.telloapi;
 
 import me.cubixor.telloapi.api.*;
+import me.cubixor.telloapi.logs.LogPacketListener;
 import me.cubixor.telloapi.photo.File;
 import me.cubixor.telloapi.video.VideoManager;
 
 import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class Drone extends Tello {
@@ -22,7 +25,8 @@ public class Drone extends Tello {
     private final List<DroneStatusListener> droneStatusListeners = new ArrayList<>();
     private final List<FileReceiver> fileReceivers = new ArrayList<>();
     private final HashMap<Integer, File> pendingFiles = new HashMap<>();
-    private final List<DroneConnectionListener> droneConnectionListener = new ArrayList<>();
+    private final List<DroneConnectionListener> droneConnectionListeners = new ArrayList<>();
+    private final List<LogPacketListener> logPacketListeners = new ArrayList<>();
     int resetAxis = -1;
     int lastMessage;
     private DatagramSocket socket;
@@ -33,12 +37,19 @@ public class Drone extends Tello {
     private boolean fastMode = false;
     private boolean connected = false;
 
+    private int iFrameInterval;
+    private ScheduledFuture<?> videoScheduler;
+
     public Drone(int reconnectMillis, int timeoutSecs) {
         try {
-            socket = new DatagramSocket(8889);
+            System.out.println("START DRONE SERVER");
+            socket = new DatagramSocket(null);
+            socket.setReuseAddress(true);
+            socket.bind(new InetSocketAddress(8889));
         } catch (SocketException e) {
             e.printStackTrace();
         }
+
         videoManager = new VideoManager(this);
         droneStateManager = new DroneStateManager();
         udpServer = new UdpServer(this);
@@ -46,7 +57,7 @@ public class Drone extends Tello {
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
         executor.scheduleAtFixedRate(() -> {
-            if (!connected) {
+            if (!isConnected()) {
                 getPacketSender().sendConnectPacket();
             } else {
                 Thread.currentThread().interrupt();
@@ -57,10 +68,12 @@ public class Drone extends Tello {
             if (connected) {
                 if (lastMessage == timeoutSecs) {
                     connected = false;
-                    Thread.currentThread().interrupt();
-                    for (DroneConnectionListener droneConnectionListener : droneConnectionListener) {
+
+                    for (DroneConnectionListener droneConnectionListener : droneConnectionListeners) {
                         droneConnectionListener.onDisconnect();
                     }
+
+                    Thread.currentThread().interrupt();
                 } else {
                     lastMessage++;
                 }
@@ -88,6 +101,11 @@ public class Drone extends Tello {
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         executor.scheduleAtFixedRate(() -> {
+            if (!isConnected()) {
+                executor.shutdown();
+                return;
+            }
+
             int a1 = (int) (1024 + 660 * roll);
             int a2 = (int) (1024 + 660 * pitch);
             int a3 = (int) (1024 + 660 * throttle);
@@ -103,7 +121,7 @@ public class Drone extends Tello {
 
         }, 0, 20, TimeUnit.MILLISECONDS);
 
-        for (DroneConnectionListener droneConnectionListener : droneConnectionListener) {
+        for (DroneConnectionListener droneConnectionListener : droneConnectionListeners) {
             droneConnectionListener.onConnect();
         }
     }
@@ -115,7 +133,7 @@ public class Drone extends Tello {
 
     @Override
     public void addConnectionListener(DroneConnectionListener droneConnectionListener) {
-        this.droneConnectionListener.add(droneConnectionListener);
+        this.droneConnectionListeners.add(droneConnectionListener);
     }
 
     @Override
@@ -131,6 +149,11 @@ public class Drone extends Tello {
     @Override
     public void addFileListener(FileReceiver fileReceiver) {
         fileReceivers.add(fileReceiver);
+    }
+
+    @Override
+    public void addLogPacketListener(LogPacketListener logPacketListener) {
+        logPacketListeners.add(logPacketListener);
     }
 
     @Override
@@ -160,6 +183,10 @@ public class Drone extends Tello {
         return droneStatusListeners;
     }
 
+    public List<LogPacketListener> getLogPacketListeners() {
+        return logPacketListeners;
+    }
+
     public List<FileReceiver> getFileReceivers() {
         return fileReceivers;
     }
@@ -171,7 +198,6 @@ public class Drone extends Tello {
     public UdpServer getUdpServer() {
         return udpServer;
     }
-
 
     private void checkAxis(float axis) {
         if (axis < -1.0f || axis > 1.0f) {
@@ -253,8 +279,34 @@ public class Drone extends Tello {
     }
 
     @Override
-    public void startVideoStream() {
+    public void startVideoStream(int iFrameInterval) {
+        this.iFrameInterval = iFrameInterval;
+
+        videoManager.getVideoServer().getUdpReceiverThread().start();
+        //videoManager.getVideoFrameGrabber().getVideoThread().start();
+
+        startVideoScheduler();
+    }
+
+    private void startVideoScheduler() {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(() -> getPacketSender().sendStartVideoPacket(), 0, 1, TimeUnit.SECONDS);
+        videoScheduler = executor.scheduleAtFixedRate(() -> {
+            if (!isConnected()) {
+                videoScheduler.cancel(true);
+                return;
+            }
+
+            getPacketSender().sendStartVideoPacket();
+        }, 0, iFrameInterval, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void updateIFrameInterval(int iFrameInterval) {
+        this.iFrameInterval = iFrameInterval;
+
+        if (videoScheduler != null && !videoScheduler.isCancelled()) {
+            videoScheduler.cancel(true);
+        }
+        startVideoScheduler();
     }
 }

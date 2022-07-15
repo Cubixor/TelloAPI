@@ -1,0 +1,1423 @@
+[
+  {
+    "name": "Controller",
+    "id": 1000,
+    "size": 44,
+    "fields": [
+      {
+        "name": "ctrl_tick",
+        "dataType": "uint32_t"
+      },
+      {
+        "name": "ctrl_pitch",
+        "dataType": "fp32"
+      },
+      {
+        "name": "ctrl_roll",
+        "dataType": "fp32"
+      },
+      {
+        "name": "ctrl_yaw",
+        "dataType": "fp32"
+      },
+      {
+        "name": "ctrl_thr",
+        "dataType": "fp32"
+      },
+      {
+        "name": "ctrl_mode",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "mode_switch",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "motor_state",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "sig_level",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "ctrl_level",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "sim_model",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "max_height",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "max_radius",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "D2H_x",
+        "dataType": "fp32"
+      },
+      {
+        "name": "D2H_y",
+        "dataType": "fp32"
+      },
+      {
+        "name": "act_req_id",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "act_act_id",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "cmd_mod",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "mod_req_id",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "is_soaring_up",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "eagle_temp_level",
+        "dataType": "uint8_t"
+      }
+    ]
+  },
+  {
+    "name": "aircraft_condition",
+    "id": 1001,
+    "size": 16,
+    "fields": [
+      {
+        "name": "int_fsm",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "fsm_state",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "last_fsm",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "near_gnd",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "UP_state",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "UP_acc_t",
+        "dataType": "fp32"
+      },
+      {
+        "name": "UP_TF_t",
+        "dataType": "fp32"
+      },
+      {
+        "name": "land_state",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "safe_fltr",
+        "dataType": "int16_t"
+      }
+    ]
+  },
+  {
+    "name": "serial_api_inputs",
+    "id": 1002,
+    "size": 27,
+    "fields": [
+      {
+        "name": "sdk_ctrl_F",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "sdk_roll_x",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "sdk_pitch_y",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "sdk_thr_z",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "sdk_yaw",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "sdk_fdfd_x",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "sdk_fdfd_y",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "ctrl_dev",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "sub_mode",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "open_req",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "open_ack",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "cmd_req",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "cmd_ack",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "avoid_E",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "bit_S",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "user_flag",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "app_flag",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "rc_cnt",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "sup_rc",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "fact_cnt",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "f_test",
+        "dataType": "uint8_t"
+      }
+    ]
+  },
+  {
+    "name": "IMU_ATTI_0",
+    "id": 2048,
+    "size": 120,
+    "fields": [
+      {
+        "name": "long0",
+        "dataType": "fp64"
+      },
+      {
+        "name": "lati0",
+        "dataType": "fp64"
+      },
+      {
+        "name": "press0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "ax0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "ay0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "az0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "wx0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "wy0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "wz0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "alti0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "qw0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "qx0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "qy0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "qz0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "agx0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "agy0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "agz0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "vgx0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "vgy0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "vgz0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "gbx0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "gby0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "gbz0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "mx0",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "my0",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "mz0",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "tx0",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "ty0",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "tz0",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "sensor_stat0",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "filter_stat0",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "svn0",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "atti_cnt0",
+        "dataType": "uint16_t"
+      }
+    ]
+  },
+  {
+    "name": "IMU_EX_0",
+    "id": 2064,
+    "size": 60,
+    "fields": [
+      {
+        "name": "vo_vx0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "vo_vy0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "vo_vz0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "vo_px0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "vo_py0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "vo_pz0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "us_v0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "us_p0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "rtk_long0",
+        "dataType": "fp64"
+      },
+      {
+        "name": "rtk_lati0",
+        "dataType": "fp64"
+      },
+      {
+        "name": "rtk_alti0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "flag_navi0",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "flag_err0",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "flag_rsv0",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "ex_cnt0",
+        "dataType": "uint16_t"
+      }
+    ]
+  },
+  {
+    "name": "ATTI_MINI0",
+    "id": 2208,
+    "size": 40,
+    "fields": [
+      {
+        "name": "s_qw0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "s_qx0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "s_qy0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "s_qz0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "s_pgz0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "s_vgz0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "s_agz0",
+        "dataType": "fp32"
+      },
+      {
+        "name": "s_rsv00",
+        "dataType": "uint32_t"
+      },
+      {
+        "name": "s_rsv10",
+        "dataType": "uint32_t"
+      },
+      {
+        "name": "s_cnt0",
+        "dataType": "uint32_t"
+      }
+    ]
+  },
+  {
+    "name": "ctrl_vert_debug",
+    "id": 1200,
+    "size": 24,
+    "fields": [
+      {
+        "name": "vert_mode",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "vert_state",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "vert_flag",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "vert_pos",
+        "dataType": "fp32"
+      },
+      {
+        "name": "vert_brk_T",
+        "dataType": "fp32"
+      },
+      {
+        "name": "near_bound",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "true_h_lmt",
+        "dataType": "fp32"
+      },
+      {
+        "name": "hit_gnd",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "high_os_F",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "low_os_F",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "ap_high_os_F",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "gnd_os_F",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "rf_os_F",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "v_lmt_os_F",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "landing_type",
+        "dataType": "uint8_t"
+      }
+    ]
+  },
+  {
+    "name": "ctrl_vel_vert_debug",
+    "id": 1202,
+    "size": 33,
+    "fields": [
+      {
+        "name": "vel_tag",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "vel_cmd",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "vel_before",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "vel_after",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "vel_fdbk",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "gnd_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "gnd_work",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "roof_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "roof_work",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "low_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "low_work",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "high_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "high_work",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AP_work",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AP_en0",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AP_en1",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AP_en2",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "hit_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "hit_work",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "hit_norm",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "hit_damp",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "down_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "down_work",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "down_norm",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "down_damp",
+        "dataType": "int16_t"
+      }
+    ]
+  },
+  {
+    "name": "ctrl_acc_vert_debug",
+    "id": 1203,
+    "size": 7,
+    "fields": [
+      {
+        "name": "acc_tag",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "acc_cmd",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "acc_fdbk",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "thr_cmd",
+        "dataType": "int16_t"
+      }
+    ]
+  },
+  {
+    "name": "ctrl_horiz_debug",
+    "id": 1300,
+    "size": 137,
+    "fields": [
+      {
+        "name": "horiz_mode",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "hov_state",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "hov_flag",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "hov_px",
+        "dataType": "fp32"
+      },
+      {
+        "name": "hov_py",
+        "dataType": "fp32"
+      },
+      {
+        "name": "hov_brk_T",
+        "dataType": "fp32"
+      },
+      {
+        "name": "hov_cfrm_T",
+        "dataType": "fp32"
+      },
+      {
+        "name": "pos_cmdx",
+        "dataType": "fp32"
+      },
+      {
+        "name": "pos_cmdy",
+        "dataType": "fp32"
+      },
+      {
+        "name": "vel_cmdx",
+        "dataType": "fp32"
+      },
+      {
+        "name": "vel_cmdy",
+        "dataType": "fp32"
+      },
+      {
+        "name": "h_api_mode",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "h_api_frm",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "tilt_cmd_x",
+        "dataType": "fp32"
+      },
+      {
+        "name": "tilt_cmd_y",
+        "dataType": "fp32"
+      },
+      {
+        "name": "v_ctrl_mod",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "trs_f_req",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "trs_f_flg",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "trs_mod",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "trs_lck_st",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "trs_p_cmd",
+        "dataType": "fp32"
+      },
+      {
+        "name": "trs_v_cmd",
+        "dataType": "fp32"
+      },
+      {
+        "name": "trs_p_lck",
+        "dataType": "fp32"
+      },
+      {
+        "name": "trs_lck_T",
+        "dataType": "fp32"
+      },
+      {
+        "name": "emg_brk_F",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "near_bnd",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "mode_atti_limit",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "avoid_atti_limit",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "gimbal_atti_limit",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "vo_lost_atti_limit",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "compen_atti_limit",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "gesture_atti_limit",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "on_ground_atti_limit",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "braking_atti_limit",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "low_level_atti_limit",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "atti_compen_for_wind",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "saturation_atti_limit",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "bat_atti_limit",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "uncer_k_adjust_atti_limit",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "takeoff_limit",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "final_atti_limit",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "avoid_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "flw_gmb_F",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "in_flw_gmb",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "GF_tgt_yaw",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "GF_cur_yaw",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "G_tgt_gyro",
+        "dataType": "fp32"
+      },
+      {
+        "name": "gmb_mode",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "gmb_jnt_p",
+        "dataType": "fp32"
+      },
+      {
+        "name": "gmb_jnt_y",
+        "dataType": "fp32"
+      },
+      {
+        "name": "gmb_on",
+        "dataType": "fp32"
+      },
+      {
+        "name": "gmb_pos",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "track_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "trck_yaw_v",
+        "dataType": "fp32"
+      },
+      {
+        "name": "CL_tors",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "ap_os_F",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "avd_ob_os_F",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "H_fence_os_F",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "R_os_F",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "h_lmt_os_F",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "true_rad_lmt",
+        "dataType": "uint16_t"
+      }
+    ]
+  },
+  {
+    "name": "fly_limit_vel_debug",
+    "id": 1303,
+    "size": 64,
+    "fields": [
+      {
+        "name": "rad_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "rad_work",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "rad_dir_x",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "rad_dir_y",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "rad_dis_to_obj",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AP0_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AP0_work",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AP0_dir_x",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AP0_dir_y",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AP0_dis_to_obj",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AP1_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AP1_work",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AP1_dir_x",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AP1_dir_y",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AP1_dis_to_obj",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AP2_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AP2_work",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AP2_dir_x",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AP2_dir_y",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AP2_dis_to_obj",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AO0_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AO0_work",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AO0_dir_x",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AO0_dir_y",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AO0_dis_to_obj",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AO1_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AO1_work",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AO1_dir_x",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AO1_dir_y",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AO1_dis_to_obj",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AO2_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AO2_work",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AO2_dir_x",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AO2_dir_y",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AO2_dis_to_obj",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AO3_en",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AO3_work",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "AO3_dir_x",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AO3_dir_y",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "AO3_dis_to_obj",
+        "dataType": "int16_t"
+      }
+    ]
+  },
+  {
+    "name": "ctrl_horiz_atti_debug",
+    "id": 1304,
+    "size": 34,
+    "fields": [
+      {
+        "name": "atti_tag",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "tors_type",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "tgt_tors",
+        "dataType": "fp32"
+      },
+      {
+        "name": "tgt_tilt_x",
+        "dataType": "fp32"
+      },
+      {
+        "name": "tgt_tilt_y",
+        "dataType": "fp32"
+      },
+      {
+        "name": "tgt_body_x",
+        "dataType": "fp32"
+      },
+      {
+        "name": "tgt_body_y",
+        "dataType": "fp32"
+      },
+      {
+        "name": "cur_tors",
+        "dataType": "fp32"
+      },
+      {
+        "name": "cur_tilt_x",
+        "dataType": "fp32"
+      },
+      {
+        "name": "cur_tilt_y",
+        "dataType": "fp32"
+      }
+    ]
+  },
+  {
+    "name": "ctrl_horiz_ang_vel_debug",
+    "id": 1305,
+    "size": 37,
+    "fields": [
+      {
+        "name": "gyro_tag",
+        "dataType": "uint8_t"
+      },
+      {
+        "name": "gyro_cmdx",
+        "dataType": "fp32"
+      },
+      {
+        "name": "gyro_cmdy",
+        "dataType": "fp32"
+      },
+      {
+        "name": "gyro_cmdz",
+        "dataType": "fp32"
+      },
+      {
+        "name": "gyro_fbkx",
+        "dataType": "fp32"
+      },
+      {
+        "name": "gyro_fbky",
+        "dataType": "fp32"
+      },
+      {
+        "name": "gyro_fbkz",
+        "dataType": "fp32"
+      },
+      {
+        "name": "smoothed_ang_vel[0]",
+        "dataType": "fp32"
+      },
+      {
+        "name": "smoothed_ang_vel[1]",
+        "dataType": "fp32"
+      },
+      {
+        "name": "smoothed_ang_vel[2]",
+        "dataType": "fp32"
+      }
+    ]
+  },
+  {
+    "name": "ctrl_allocation_debug",
+    "id": 1306,
+    "size": 22,
+    "fields": [
+      {
+        "name": "raw_tilt_x",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "raw_tilt_y",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "raw_tors",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "raw_lift",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "fix_tilt_x",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "fix_tilt_y",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "fix_tor",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "fix_lift",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "bound_max",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "bound_min",
+        "dataType": "int16_t"
+      },
+      {
+        "name": "limit_tors_scale",
+        "dataType": "int16_t"
+      }
+    ]
+  },
+  {
+    "name": "ctrl_horiz_motor_debug",
+    "id": 1307,
+    "size": 16,
+    "fields": [
+      {
+        "name": "pwm1",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "pwm2",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "pwm3",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "pwm4",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "pwm5",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "pwm6",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "pwm7",
+        "dataType": "uint16_t"
+      },
+      {
+        "name": "pwm8",
+        "dataType": "uint16_t"
+      }
+    ]
+  },
+  {
+    "name": "battery_info",
+    "id": 1710,
+    "size": 6,
+    "fields": [
+      {
+        "name": "Vol",
+        "dataType": "float"
+      },
+      {
+        "name": "BatCap",
+        "dataType": "uint16_t"
+      }
+    ]
+  },
+  {
+    "name": "ns_data_debug",
+    "id": 10085,
+    "size": 80,
+    "fields": [
+      {
+        "name": "d00",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d01",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d02",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d03",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d04",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d05",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d06",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d07",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d08",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d09",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d10",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d11",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d12",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d13",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d14",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d15",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d16",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d17",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d18",
+        "dataType": "fp32"
+      },
+      {
+        "name": "d19",
+        "dataType": "fp32"
+      }
+    ]
+  },
+  {
+    "name": "ns_data_component",
+    "id": 10086,
+    "size": 4,
+    "fields": [
+      {
+        "name": "ns_cmpnt",
+        "dataType": "uint32_t"
+      }
+    ]
+  },
+  {
+    "name": "air_compensate_data",
+    "id": 10100,
+    "size": 21,
+    "fields": [
+      {
+        "name": "comp_alti",
+        "dataType": "fp32"
+      },
+      {
+        "name": "wind_spd",
+        "dataType": "fp32"
+      },
+      {
+        "name": "wind_x",
+        "dataType": "fp32"
+      },
+      {
+        "name": "wind_y",
+        "dataType": "fp32"
+      },
+      {
+        "name": "MotorSpd",
+        "dataType": "fp32"
+      },
+      {
+        "name": "vel_level",
+        "dataType": "uint8_t"
+      }
+    ]
+  }
+]

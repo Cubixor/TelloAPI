@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 public abstract class DroneState extends DroneStatus {
 
+    public abstract int getFlySpeed();
+
     public abstract boolean isLightOK();
 
     public abstract int getWifiStrength();

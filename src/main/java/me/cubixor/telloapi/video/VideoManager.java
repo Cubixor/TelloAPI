@@ -4,17 +4,16 @@ import me.cubixor.telloapi.Drone;
 import me.cubixor.telloapi.api.VideoInfo;
 import me.cubixor.telloapi.api.VideoListener;
 
-import java.io.PipedInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class VideoManager extends VideoInfo {
 
-    private final PipedInputStream videoInputStream = new PipedInputStream();
+    //private final PipedInputStream videoInputStream = new PipedInputStream();
     private final List<VideoListener> videoListeners = new ArrayList<>();
     private final VideoServer videoServer;
-    private final VideoFrameGrabber videoFrameGrabber;
+    //private final VideoFrameGrabber videoFrameGrabber;
     private BitRate bitRate;
     private float exposure;
     private VideoMode videoMode = VideoMode.PHOTO;
@@ -23,7 +22,7 @@ public class VideoManager extends VideoInfo {
 
     public VideoManager(Drone tello) {
         videoServer = new VideoServer(this, tello);
-        videoFrameGrabber = new VideoFrameGrabber(this);
+        //videoFrameGrabber = new VideoFrameGrabber(this);
     }
 
     @Override
@@ -71,9 +70,11 @@ public class VideoManager extends VideoInfo {
         this.smartVideoRunning = smartVideoRunning;
     }
 
+/*
     public PipedInputStream getVideoInputStream() {
         return videoInputStream;
     }
+*/
 
     public List<VideoListener> getVideoListeners() {
         return videoListeners;
@@ -83,7 +84,9 @@ public class VideoManager extends VideoInfo {
         return videoServer;
     }
 
+/*
     public VideoFrameGrabber getVideoFrameGrabber() {
         return videoFrameGrabber;
     }
+*/
 }

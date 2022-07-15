@@ -10,20 +10,13 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
-import java.util.List;
 
 public class PacketConstructor implements PacketSender {
 
     private final Drone tello;
-    private final float[] exposureValues = new float[]{-3.0f, -2.7f, -2.3f, -2.0f, -1.7f, -1.3f, -1.0f, -0.7f, -0.3f, 0f, 0.3f, 0.7f, 1.0f, 1.3f, 1.7f, 2.0f, 2.3f, 2.7f, 3.0f};
 
     public PacketConstructor(Drone tello) {
         this.tello = tello;
-    }
-
-    @Override
-    public float[] getExposureValues() {
-        return exposureValues;
     }
 
     private void sendPacket(MessageType messageType) {
@@ -220,7 +213,7 @@ public class PacketConstructor implements PacketSender {
         byte[] payload = new byte[1];
         payload[0] = (byte) (videoMode == VideoInfo.VideoMode.VIDEO ? 1 : 0);
         sendPacket(MessageType.SET_VIDEO_ASPECT, payload);
-        tello.getVideoInfo().getVideoFrameGrabber().applyFrameSize(videoMode);
+        //tello.getVideoInfo().getVideoFrameGrabber().applyFrameSize(videoMode);
         tello.getVideoInfo().setVideoMode(videoMode);
     }
 
@@ -234,7 +227,10 @@ public class PacketConstructor implements PacketSender {
 
     @Override
     public void sendSetExposurePacket(float exposure) {
-        LinkedList<Float> exposureValues = new LinkedList<>(List.of(exposure));
+        LinkedList<Float> exposureValues = new LinkedList<>();
+        for (int i = 0; i < VideoInfo.getExposureValues().length; i++) {
+            exposureValues.add(VideoInfo.getExposureValues()[i]);
+        }
 
         if (!exposureValues.contains(exposure)) {
             throw new IllegalArgumentException("Invalid exposure value!");
@@ -321,7 +317,6 @@ public class PacketConstructor implements PacketSender {
         byte doneByte = (byte) (done ? 1 : 0);
         byte[] payload = ByteBuffer.allocate(7).order(ByteOrder.LITTLE_ENDIAN).put(doneByte).putShort((short) fileID).putInt(filePiece).array();
         sendPacket(MessageType.FILE_DATA, payload);
-        System.out.println("SENDFILEDATA: " + Utils.bytesToHex(payload));
     }
 
     @Override
@@ -339,6 +334,20 @@ public class PacketConstructor implements PacketSender {
 
         data[0] = (byte) (mode << 2 | flag);
         sendPacket(MessageType.START_SMART_VIDEO, data);
+    }
+
+    @Override
+    public void sendLogHeaderAckPacket(short s) {
+        byte[] data = ByteBuffer.allocate(3).put((byte) 0).order(ByteOrder.LITTLE_ENDIAN).putShort(s).array();
+
+        sendPacket(MessageType.LOG_HEADER, data);
+    }
+
+    @Override
+    public void sendLogConfigAckPacket(short s, int s2) {
+        byte[] data = ByteBuffer.allocate(7).put((byte) 0).order(ByteOrder.LITTLE_ENDIAN).putShort(s).putInt(s2).array();
+
+        sendPacket(MessageType.LOG_CONFIG, data);
     }
 
     @Override

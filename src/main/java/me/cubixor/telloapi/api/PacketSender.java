@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 public interface PacketSender {
 
-    float[] getExposureValues();
-
     void sendConnectPacket();
 
     void sendQuerySSIDPacket();
@@ -71,6 +69,10 @@ public interface PacketSender {
     void sendFileCompletePacket(int fileID, int fileSize);
 
     void sendStartSmartVideoPacket(VideoInfo.SmartVideoMode smartVideoMode, boolean start);
+
+    void sendLogHeaderAckPacket(short s);
+
+    void sendLogConfigAckPacket(short s, int s2);
 
     void sendBounceModePacket(boolean start);
 

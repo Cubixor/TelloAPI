@@ -1,6 +1,7 @@
 package me.cubixor.telloapi.api;
 
 import me.cubixor.telloapi.Drone;
+import me.cubixor.telloapi.logs.LogPacketListener;
 
 public abstract class Tello {
 
@@ -17,6 +18,8 @@ public abstract class Tello {
     public abstract void addVideoListener(VideoListener videoListener);
 
     public abstract void addFileListener(FileReceiver fileReceiver);
+
+    public abstract void addLogPacketListener(LogPacketListener logPacketListener);
 
     public abstract PacketSender getPacketSender();
 
@@ -48,6 +51,7 @@ public abstract class Tello {
 
     public abstract void setAxis(float roll, float pitch, float throttle, float yaw);
 
-    public abstract void startVideoStream();
+    public abstract void startVideoStream(int iFrameInterval);
 
+    public abstract void updateIFrameInterval(int iFrameInterval);
 }
