@@ -27,31 +27,5 @@ public abstract class Tello {
 
     public abstract VideoInfo getVideoInfo();
 
-    public abstract float getRoll();
-
-    public abstract void setRoll(float roll);
-
-    public abstract float getPitch();
-
-    public abstract void setPitch(float pitch);
-
-    public abstract float getThrottle();
-
-    public abstract void setThrottle(float throttle);
-
-    public abstract float getYaw();
-
-    public abstract void setYaw(float yaw);
-
-    public abstract boolean isFastMode();
-
-    public abstract void setFastMode(boolean fastMode);
-
-    public abstract float[] getAxis();
-
-    public abstract void setAxis(float roll, float pitch, float throttle, float yaw);
-
-    public abstract void startVideoStream(int iFrameInterval);
-
-    public abstract void updateIFrameInterval(int iFrameInterval);
+    public abstract DroneAxis getDroneAxis();
 }

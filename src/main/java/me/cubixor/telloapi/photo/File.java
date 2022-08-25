@@ -15,6 +15,23 @@ public class File {
         this.fileSize = fileSize;
     }
 
+    public byte[] toByteArray() {
+        byte[] data = new byte[this.getFileSize()];
+
+        int i = 0;
+        for (FilePiece filePiece : this.getFilePieces().values()) {
+            for (FileChunk fileChunk : filePiece.getFileChunks()) {
+                if (fileChunk != null) {
+                    for (byte b : fileChunk.getData()) {
+                        data[i] = b;
+                        i++;
+                    }
+                }
+            }
+        }
+
+        return data;
+    }
 
     public int getFileID() {
         return fileID;

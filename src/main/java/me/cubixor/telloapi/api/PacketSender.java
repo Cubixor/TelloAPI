@@ -20,9 +20,9 @@ public interface PacketSender {
 
     void sendSetBitratePacket(VideoInfo.BitRate bitrate);
 
-    //void sendSetDynAdjRatePacket();
+    void sendSetDynAdjRatePacket(boolean enable);
 
-    void sendSetEISPacket(int i);
+    void sendSetEISPacket(boolean enable);
 
     void sendStartVideoPacket();
 
@@ -48,11 +48,13 @@ public interface PacketSender {
 
     void sendQueryLoaderVersionPacket();
 
+    void sendSticksPacket(float roll, float pitch, float throttle, float yaw, boolean fastMode);
+
     void sendSticksPacket(int roll, int pitch, int throttle, int yaw, boolean fastMode);
 
     void sendTakeOffPacket();
 
-    void sendLandPacket();
+    void sendLandPacket(boolean bool);
 
     void sendSetHeightLimitPacket(short height);
 

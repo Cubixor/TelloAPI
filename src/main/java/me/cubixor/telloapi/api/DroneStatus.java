@@ -98,7 +98,7 @@ public abstract class DroneStatus {
 
     /**
      * Not used anywhere in the original app
-     * Seems fo be always 0
+     * Seems to be always 0
      * TODO Check if any data is sent to drone and what it represents
      *
      * @return ?
@@ -130,6 +130,7 @@ public abstract class DroneStatus {
 
     /**
      * Drone speed in east axis, used to calculate total speed.
+     * Value is in meters per second.
      *
      * @return drone speed in east axis
      */
@@ -224,6 +225,7 @@ public abstract class DroneStatus {
      * Not used anywhere in the original app
      * Drone speed in the vertical axis
      * Negative when flying up and positive when flying down
+     * Value is in meters per second.
      *
      * @return drone speed relative to ground
      */
@@ -256,6 +258,7 @@ public abstract class DroneStatus {
 
     /**
      * Drone speed in north axis, used to calculate total speed.
+     * Value is in meters per second.
      *
      * @return drone speed in north axis
      */

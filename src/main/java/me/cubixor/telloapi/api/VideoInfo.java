@@ -12,11 +12,18 @@ public abstract class VideoInfo {
 
     public abstract float getExposure();
 
+    public abstract int getIFrameInterval();
+
     public abstract VideoMode getVideoMode();
 
     public abstract SmartVideoMode getSmartVideoMode();
 
     public abstract boolean isSmartVideoRunning();
+
+    public abstract void startVideoStream(int iFrameInterval);
+
+    public abstract void updateIFrameInterval(int iFrameInterval);
+
 
     public enum BitRate {
         AUTO, MBPS_1, MBPS_1_5, MBPS_2, MBPS_3, MBPS_4

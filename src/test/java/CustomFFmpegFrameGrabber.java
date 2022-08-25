@@ -1,7 +1,4 @@
 /*
-package me.cubixor.telloapi.video;
-*/
-/*
  * Copyright 2020 Fritz Windisch
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +12,7 @@ package me.cubixor.telloapi.video;
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *//*
-
+ */
 
 import org.bytedeco.ffmpeg.avcodec.AVCodec;
 import org.bytedeco.ffmpeg.avcodec.AVCodecContext;
@@ -54,219 +50,11 @@ import static org.bytedeco.ffmpeg.global.avutil.*;
 import static org.bytedeco.ffmpeg.global.swresample.*;
 import static org.bytedeco.ffmpeg.global.swscale.*;
 
-*/
 /**
  * A custom FFmpegFrameGrabber, that does not freeze upon calling start() when feeding it a tello4j stream
  *
  * @author Samuel Audet, adapted
- * <p>
- * Calls {@code FFmpegFrameGrabber(inputStream, Integer.MAX_VALUE - 8)}
- * so that the whole input stream is seekable.
- * <p>
- * Is there a video stream?
- * @return {@code video_st!=null;}
- * <p>
- * Is there an audio stream?
- * @return {@code audio_st!=null;}
- * <p>
- * Returns {@link #getVideoFrameRate()}
- * <p>
- * Estimation of audio frames per second
- * @return (double) getSampleRate()) / samples_frame.nb_samples()
- * if samples_frame.nb_samples() is not zero, otherwise return 0
- * <p>
- * default override of super.setFrameNumber implies setting
- * of a frame close to a video frame having that number
- * <p>
- * if there is video stream tries to seek to video frame with corresponding timestamp
- * otherwise sets super.frameNumber only because frameRate==0 if there is no video stream
- * <p>
- * if there is audio stream tries to seek to audio frame with corresponding timestamp
- * ignoring otherwise
- * <p>
- * setTimestamp without checking frame content (using old code used in JavaCV versions prior to 1.4.1)
- * <p>
- * setTimestamp with possibility to select between old quick seek code or new code
- * doing check of frame content. The frame check can be useful with corrupted files, when seeking may
- * end up with an empty frame not containing video nor audio
- * <p>
- * setTimestamp with resulting video frame type if there is a video stream
- * <p>
- * setTimestamp with resulting audio frame type if there is an audio stream
- * <p>
- * setTimestamp with a priority the resulting frame should be:
- * video (frameTypesToSeek contains only Frame.Type.VIDEO),
- * audio (frameTypesToSeek contains only Frame.Type.AUDIO),
- * or any (frameTypesToSeek contains both)
- * <p>
- * Returns {@link #getLengthInVideoFrames()}
- * <p>
- * Returns {@code (int) Math.round(getLengthInTime() * getFrameRate() / 1000000L)}, which is an approximation in general.
- * <p>
- * We already know all parameters of our tello4j stream and this freezes the whole start call
- * We can just skip it to fix this issue
- * <p>
- * Calls {@code FFmpegFrameGrabber(inputStream, Integer.MAX_VALUE - 8)}
- * so that the whole input stream is seekable.
- * <p>
- * Is there a video stream?
- * @return {@code video_st!=null;}
- * <p>
- * Is there an audio stream?
- * @return {@code audio_st!=null;}
- * <p>
- * Returns {@link #getVideoFrameRate()}
- * <p>
- * Estimation of audio frames per second
- * @return (double) getSampleRate()) / samples_frame.nb_samples()
- * if samples_frame.nb_samples() is not zero, otherwise return 0
- * <p>
- * default override of super.setFrameNumber implies setting
- * of a frame close to a video frame having that number
- * <p>
- * if there is video stream tries to seek to video frame with corresponding timestamp
- * otherwise sets super.frameNumber only because frameRate==0 if there is no video stream
- * <p>
- * if there is audio stream tries to seek to audio frame with corresponding timestamp
- * ignoring otherwise
- * <p>
- * setTimestamp without checking frame content (using old code used in JavaCV versions prior to 1.4.1)
- * <p>
- * setTimestamp with possibility to select between old quick seek code or new code
- * doing check of frame content. The frame check can be useful with corrupted files, when seeking may
- * end up with an empty frame not containing video nor audio
- * <p>
- * setTimestamp with resulting video frame type if there is a video stream
- * <p>
- * setTimestamp with resulting audio frame type if there is an audio stream
- * <p>
- * setTimestamp with a priority the resulting frame should be:
- * video (frameTypesToSeek contains only Frame.Type.VIDEO),
- * audio (frameTypesToSeek contains only Frame.Type.AUDIO),
- * or any (frameTypesToSeek contains both)
- * <p>
- * Returns {@link #getLengthInVideoFrames()}
- * <p>
- * Returns {@code (int) Math.round(getLengthInTime() * getFrameRate() / 1000000L)}, which is an approximation in general.
- * <p>
- * We already know all parameters of our tello4j stream and this freezes the whole start call
- * We can just skip it to fix this issue
- * <p>
- * Calls {@code FFmpegFrameGrabber(inputStream, Integer.MAX_VALUE - 8)}
- * so that the whole input stream is seekable.
- * <p>
- * Is there a video stream?
- * @return {@code video_st!=null;}
- * <p>
- * Is there an audio stream?
- * @return {@code audio_st!=null;}
- * <p>
- * Returns {@link #getVideoFrameRate()}
- * <p>
- * Estimation of audio frames per second
- * @return (double) getSampleRate()) / samples_frame.nb_samples()
- * if samples_frame.nb_samples() is not zero, otherwise return 0
- * <p>
- * default override of super.setFrameNumber implies setting
- * of a frame close to a video frame having that number
- * <p>
- * if there is video stream tries to seek to video frame with corresponding timestamp
- * otherwise sets super.frameNumber only because frameRate==0 if there is no video stream
- * <p>
- * if there is audio stream tries to seek to audio frame with corresponding timestamp
- * ignoring otherwise
- * <p>
- * setTimestamp without checking frame content (using old code used in JavaCV versions prior to 1.4.1)
- * <p>
- * setTimestamp with possibility to select between old quick seek code or new code
- * doing check of frame content. The frame check can be useful with corrupted files, when seeking may
- * end up with an empty frame not containing video nor audio
- * <p>
- * setTimestamp with resulting video frame type if there is a video stream
- * <p>
- * setTimestamp with resulting audio frame type if there is an audio stream
- * <p>
- * setTimestamp with a priority the resulting frame should be:
- * video (frameTypesToSeek contains only Frame.Type.VIDEO),
- * audio (frameTypesToSeek contains only Frame.Type.AUDIO),
- * or any (frameTypesToSeek contains both)
- * <p>
- * Returns {@link #getLengthInVideoFrames()}
- * <p>
- * Returns {@code (int) Math.round(getLengthInTime() * getFrameRate() / 1000000L)}, which is an approximation in general.
- * <p>
- * We already know all parameters of our tello4j stream and this freezes the whole start call
- * We can just skip it to fix this issue
- * <p>
- * Is there an audio stream?
- * @return {@code audio_st!=null;}
- * <p>
- * Returns {@link #getVideoFrameRate()}
- * <p>
- * Estimation of audio frames per second
- * @return (double) getSampleRate()) / samples_frame.nb_samples()
- * if samples_frame.nb_samples() is not zero, otherwise return 0
- * <p>
- * default override of super.setFrameNumber implies setting
- * of a frame close to a video frame having that number
- * <p>
- * if there is video stream tries to seek to video frame with corresponding timestamp
- * otherwise sets super.frameNumber only because frameRate==0 if there is no video stream
- * <p>
- * if there is audio stream tries to seek to audio frame with corresponding timestamp
- * ignoring otherwise
- * <p>
- * setTimestamp without checking frame content (using old code used in JavaCV versions prior to 1.4.1)
- * <p>
- * setTimestamp with possibility to select between old quick seek code or new code
- * doing check of frame content. The frame check can be useful with corrupted files, when seeking may
- * end up with an empty frame not containing video nor audio
- * <p>
- * setTimestamp with resulting video frame type if there is a video stream
- * <p>
- * setTimestamp with resulting audio frame type if there is an audio stream
- * <p>
- * setTimestamp with a priority the resulting frame should be:
- * video (frameTypesToSeek contains only Frame.Type.VIDEO),
- * audio (frameTypesToSeek contains only Frame.Type.AUDIO),
- * or any (frameTypesToSeek contains both)
- * <p>
- * Returns {@link #getLengthInVideoFrames()}
- * <p>
- * Returns {@code (int) Math.round(getLengthInTime() * getFrameRate() / 1000000L)}, which is an approximation in general.
- * <p>
- * We already know all parameters of our tello4j stream and this freezes the whole start call
- * We can just skip it to fix this issue
- * <p>
- * if there is video stream tries to seek to video frame with corresponding timestamp
- * otherwise sets super.frameNumber only because frameRate==0 if there is no video stream
- * <p>
- * if there is audio stream tries to seek to audio frame with corresponding timestamp
- * ignoring otherwise
- * <p>
- * setTimestamp without checking frame content (using old code used in JavaCV versions prior to 1.4.1)
- * <p>
- * setTimestamp with possibility to select between old quick seek code or new code
- * doing check of frame content. The frame check can be useful with corrupted files, when seeking may
- * end up with an empty frame not containing video nor audio
- * <p>
- * setTimestamp with resulting video frame type if there is a video stream
- * <p>
- * setTimestamp with resulting audio frame type if there is an audio stream
- * <p>
- * setTimestamp with a priority the resulting frame should be:
- * video (frameTypesToSeek contains only Frame.Type.VIDEO),
- * audio (frameTypesToSeek contains only Frame.Type.AUDIO),
- * or any (frameTypesToSeek contains both)
- * <p>
- * Returns {@link #getLengthInVideoFrames()}
- * <p>
- * Returns {@code (int) Math.round(getLengthInTime() * getFrameRate() / 1000000L)}, which is an approximation in general.
- * <p>
- * We already know all parameters of our tello4j stream and this freezes the whole start call
- * We can just skip it to fix this issue
- *//*
-
+ */
 @SuppressWarnings("all")
 public class CustomFFmpegFrameGrabber extends FrameGrabber {
     static Map<Pointer, InputStream> inputStreams = Collections.synchronizedMap(new HashMap<Pointer, InputStream>());
@@ -318,12 +106,10 @@ public class CustomFFmpegFrameGrabber extends FrameGrabber {
         this.sampleFormat = AV_SAMPLE_FMT_NONE;
     }
 
-    */
-/**
- * Calls {@code FFmpegFrameGrabber(inputStream, Integer.MAX_VALUE - 8)}
- * so that the whole input stream is seekable.
- *//*
-
+    /**
+     * Calls {@code FFmpegFrameGrabber(inputStream, Integer.MAX_VALUE - 8)}
+     * so that the whole input stream is seekable.
+     */
     public CustomFFmpegFrameGrabber(InputStream inputStream) {
         this(inputStream, Integer.MAX_VALUE - 8);
     }
@@ -507,64 +293,20 @@ public class CustomFFmpegFrameGrabber extends FrameGrabber {
         this.closeInputStream = closeInputStream;
     }
 
-    */
-/**
- * Is there a video stream?
- *
- * @return {@code video_st!=null;}
- * <p>
- * Is there an audio stream?
- * @return {@code audio_st!=null;}
- * <p>
- * Returns {@link #getVideoFrameRate()}
- * <p>
- * Estimation of audio frames per second
- * @return (double) getSampleRate()) / samples_frame.nb_samples()
- * if samples_frame.nb_samples() is not zero, otherwise return 0
- * <p>
- * default override of super.setFrameNumber implies setting
- * of a frame close to a video frame having that number
- * <p>
- * if there is video stream tries to seek to video frame with corresponding timestamp
- * otherwise sets super.frameNumber only because frameRate==0 if there is no video stream
- * <p>
- * if there is audio stream tries to seek to audio frame with corresponding timestamp
- * ignoring otherwise
- * <p>
- * setTimestamp without checking frame content (using old code used in JavaCV versions prior to 1.4.1)
- * <p>
- * setTimestamp with possibility to select between old quick seek code or new code
- * doing check of frame content. The frame check can be useful with corrupted files, when seeking may
- * end up with an empty frame not containing video nor audio
- * <p>
- * setTimestamp with resulting video frame type if there is a video stream
- * <p>
- * setTimestamp with resulting audio frame type if there is an audio stream
- * <p>
- * setTimestamp with a priority the resulting frame should be:
- * video (frameTypesToSeek contains only Frame.Type.VIDEO),
- * audio (frameTypesToSeek contains only Frame.Type.AUDIO),
- * or any (frameTypesToSeek contains both)
- * <p>
- * Returns {@link #getLengthInVideoFrames()}
- * <p>
- * Returns {@code (int) Math.round(getLengthInTime() * getFrameRate() / 1000000L)}, which is an approximation in general.
- * <p>
- * We already know all parameters of our tello4j stream and this freezes the whole start call
- * We can just skip it to fix this issue
- *//*
-
+    /**
+     * Is there a video stream?
+     *
+     * @return {@code video_st!=null;}
+     */
     public boolean hasVideo() {
         return video_st != null;
     }
 
-    */
-/**
- * Is there an audio stream?
- *
- * @return {@code audio_st!=null;}
- *//*
-
+    /**
+     * Is there an audio stream?
+     *
+     * @return {@code audio_st!=null;}
+     */
     public boolean hasAudio() {
         return audio_st != null;
     }
@@ -639,88 +381,20 @@ public class CustomFFmpegFrameGrabber extends FrameGrabber {
         }
     }
 
-    */
-/**
- * Returns {@link #getVideoFrameRate()}
- * <p>
- * Estimation of audio frames per second
- *
- * @return (double) getSampleRate()) / samples_frame.nb_samples()
- * if samples_frame.nb_samples() is not zero, otherwise return 0
- * <p>
- * default override of super.setFrameNumber implies setting
- * of a frame close to a video frame having that number
- * <p>
- * if there is video stream tries to seek to video frame with corresponding timestamp
- * otherwise sets super.frameNumber only because frameRate==0 if there is no video stream
- * <p>
- * if there is audio stream tries to seek to audio frame with corresponding timestamp
- * ignoring otherwise
- * <p>
- * setTimestamp without checking frame content (using old code used in JavaCV versions prior to 1.4.1)
- * <p>
- * setTimestamp with possibility to select between old quick seek code or new code
- * doing check of frame content. The frame check can be useful with corrupted files, when seeking may
- * end up with an empty frame not containing video nor audio
- * <p>
- * setTimestamp with resulting video frame type if there is a video stream
- * <p>
- * setTimestamp with resulting audio frame type if there is an audio stream
- * <p>
- * setTimestamp with a priority the resulting frame should be:
- * video (frameTypesToSeek contains only Frame.Type.VIDEO),
- * audio (frameTypesToSeek contains only Frame.Type.AUDIO),
- * or any (frameTypesToSeek contains both)
- * <p>
- * Returns {@link #getLengthInVideoFrames()}
- * <p>
- * Returns {@code (int) Math.round(getLengthInTime() * getFrameRate() / 1000000L)}, which is an approximation in general.
- * <p>
- * We already know all parameters of our tello4j stream and this freezes the whole start call
- * We can just skip it to fix this issue
- * <p>
- * if there is video stream tries to seek to video frame with corresponding timestamp
- * otherwise sets super.frameNumber only because frameRate==0 if there is no video stream
- * <p>
- * if there is audio stream tries to seek to audio frame with corresponding timestamp
- * ignoring otherwise
- * <p>
- * setTimestamp without checking frame content (using old code used in JavaCV versions prior to 1.4.1)
- * <p>
- * setTimestamp with possibility to select between old quick seek code or new code
- * doing check of frame content. The frame check can be useful with corrupted files, when seeking may
- * end up with an empty frame not containing video nor audio
- * <p>
- * setTimestamp with resulting video frame type if there is a video stream
- * <p>
- * setTimestamp with resulting audio frame type if there is an audio stream
- * <p>
- * setTimestamp with a priority the resulting frame should be:
- * video (frameTypesToSeek contains only Frame.Type.VIDEO),
- * audio (frameTypesToSeek contains only Frame.Type.AUDIO),
- * or any (frameTypesToSeek contains both)
- * <p>
- * Returns {@link #getLengthInVideoFrames()}
- * <p>
- * Returns {@code (int) Math.round(getLengthInTime() * getFrameRate() / 1000000L)}, which is an approximation in general.
- * <p>
- * We already know all parameters of our tello4j stream and this freezes the whole start call
- * We can just skip it to fix this issue
- *//*
-
+    /**
+     * Returns {@link #getVideoFrameRate()}
+     */
     @Override
     public double getFrameRate() {
         return getVideoFrameRate();
     }
 
-    */
-/**
- * Estimation of audio frames per second
- *
- * @return (double) getSampleRate()) / samples_frame.nb_samples()
- * if samples_frame.nb_samples() is not zero, otherwise return 0
- *//*
-
+    /**
+     * Estimation of audio frames per second
+     *
+     * @return (double) getSampleRate()) / samples_frame.nb_samples()
+     * if samples_frame.nb_samples() is not zero, otherwise return 0
+     */
     public double getAudioFrameRate() {
         if (audio_st == null) {
             return 0.0;
@@ -848,151 +522,80 @@ public class CustomFFmpegFrameGrabber extends FrameGrabber {
         return entry == null || entry.value() == null ? null : entry.value().getString();
     }
 
-    */
-/**
- * default override of super.setFrameNumber implies setting
- * of a frame close to a video frame having that number
- * <p>
- * if there is video stream tries to seek to video frame with corresponding timestamp
- * otherwise sets super.frameNumber only because frameRate==0 if there is no video stream
- * <p>
- * if there is audio stream tries to seek to audio frame with corresponding timestamp
- * ignoring otherwise
- * <p>
- * setTimestamp without checking frame content (using old code used in JavaCV versions prior to 1.4.1)
- * <p>
- * setTimestamp with possibility to select between old quick seek code or new code
- * doing check of frame content. The frame check can be useful with corrupted files, when seeking may
- * end up with an empty frame not containing video nor audio
- * <p>
- * setTimestamp with resulting video frame type if there is a video stream
- * <p>
- * setTimestamp with resulting audio frame type if there is an audio stream
- * <p>
- * setTimestamp with a priority the resulting frame should be:
- * video (frameTypesToSeek contains only Frame.Type.VIDEO),
- * audio (frameTypesToSeek contains only Frame.Type.AUDIO),
- * or any (frameTypesToSeek contains both)
- * <p>
- * Returns {@link #getLengthInVideoFrames()}
- * <p>
- * Returns {@code (int) Math.round(getLengthInTime() * getFrameRate() / 1000000L)}, which is an approximation in general.
- * <p>
- * We already know all parameters of our tello4j stream and this freezes the whole start call
- * We can just skip it to fix this issue
- *//*
-
+    /**
+     * default override of super.setFrameNumber implies setting
+     * of a frame close to a video frame having that number
+     */
     @Override
     public void setFrameNumber(int frameNumber) throws Exception {
         if (hasVideo()) setTimestamp(Math.round(1000000L * frameNumber / getFrameRate()));
         else super.frameNumber = frameNumber;
     }
 
-    */
-/**
- * if there is video stream tries to seek to video frame with corresponding timestamp
- * otherwise sets super.frameNumber only because frameRate==0 if there is no video stream
- * <p>
- * if there is audio stream tries to seek to audio frame with corresponding timestamp
- * ignoring otherwise
- * <p>
- * setTimestamp without checking frame content (using old code used in JavaCV versions prior to 1.4.1)
- * <p>
- * setTimestamp with possibility to select between old quick seek code or new code
- * doing check of frame content. The frame check can be useful with corrupted files, when seeking may
- * end up with an empty frame not containing video nor audio
- * <p>
- * setTimestamp with resulting video frame type if there is a video stream
- * <p>
- * setTimestamp with resulting audio frame type if there is an audio stream
- * <p>
- * setTimestamp with a priority the resulting frame should be:
- * video (frameTypesToSeek contains only Frame.Type.VIDEO),
- * audio (frameTypesToSeek contains only Frame.Type.AUDIO),
- * or any (frameTypesToSeek contains both)
- * <p>
- * Returns {@link #getLengthInVideoFrames()}
- * <p>
- * Returns {@code (int) Math.round(getLengthInTime() * getFrameRate() / 1000000L)}, which is an approximation in general.
- * <p>
- * We already know all parameters of our tello4j stream and this freezes the whole start call
- * We can just skip it to fix this issue
- *//*
-
+    /**
+     * if there is video stream tries to seek to video frame with corresponding timestamp
+     * otherwise sets super.frameNumber only because frameRate==0 if there is no video stream
+     */
     public void setVideoFrameNumber(int frameNumber) throws Exception {
         // best guess, AVSEEK_FLAG_FRAME has not been implemented in FFmpeg...
         if (hasVideo()) setVideoTimestamp(Math.round(1000000L * frameNumber / getFrameRate()));
         else super.frameNumber = frameNumber;
     }
 
-    */
-/**
- * if there is audio stream tries to seek to audio frame with corresponding timestamp
- * ignoring otherwise
- *//*
-
+    /**
+     * if there is audio stream tries to seek to audio frame with corresponding timestamp
+     * ignoring otherwise
+     */
     public void setAudioFrameNumber(int frameNumber) throws Exception {
         // best guess, AVSEEK_FLAG_FRAME has not been implemented in FFmpeg...
         if (hasAudio()) setAudioTimestamp(Math.round(1000000L * frameNumber / getAudioFrameRate()));
 
     }
 
-    */
-/**
- * setTimestamp without checking frame content (using old code used in JavaCV versions prior to 1.4.1)
- *//*
-
+    /**
+     * setTimestamp without checking frame content (using old code used in JavaCV versions prior to 1.4.1)
+     */
     @Override
     public void setTimestamp(long timestamp) throws Exception {
         setTimestamp(timestamp, false);
     }
 
-    */
-/**
- * setTimestamp with possibility to select between old quick seek code or new code
- * doing check of frame content. The frame check can be useful with corrupted files, when seeking may
- * end up with an empty frame not containing video nor audio
- *//*
-
+    /**
+     * setTimestamp with possibility to select between old quick seek code or new code
+     * doing check of frame content. The frame check can be useful with corrupted files, when seeking may
+     * end up with an empty frame not containing video nor audio
+     */
     public void setTimestamp(long timestamp, boolean checkFrame) throws Exception {
         setTimestamp(timestamp, checkFrame ? EnumSet.of(Frame.Type.VIDEO, Frame.Type.AUDIO) : null);
     }
 
-    */
-/**
- * setTimestamp with resulting video frame type if there is a video stream
- *//*
-
+    /**
+     * setTimestamp with resulting video frame type if there is a video stream
+     */
     public void setVideoTimestamp(long timestamp) throws Exception {
         setTimestamp(timestamp, EnumSet.of(Frame.Type.VIDEO));
     }
 
-    */
-/**
- * setTimestamp with resulting audio frame type if there is an audio stream
- *//*
-
+    /**
+     * setTimestamp with resulting audio frame type if there is an audio stream
+     */
     public void setAudioTimestamp(long timestamp) throws Exception {
         setTimestamp(timestamp, EnumSet.of(Frame.Type.AUDIO));
     }
 
-    */
-/**
- * setTimestamp with a priority the resulting frame should be:
- * video (frameTypesToSeek contains only Frame.Type.VIDEO),
- * audio (frameTypesToSeek contains only Frame.Type.AUDIO),
- * or any (frameTypesToSeek contains both)
- *//*
-
+    /**
+     * setTimestamp with a priority the resulting frame should be:
+     * video (frameTypesToSeek contains only Frame.Type.VIDEO),
+     * audio (frameTypesToSeek contains only Frame.Type.AUDIO),
+     * or any (frameTypesToSeek contains both)
+     */
     private void setTimestamp(long timestamp, EnumSet<Frame.Type> frameTypesToSeek) throws Exception {
         int ret;
         if (oc == null) {
             super.setTimestamp(timestamp);
         } else {
             timestamp = timestamp * AV_TIME_BASE / 1000000L;
-            */
-/* add the stream start time *//*
-
+            /* add the stream start time */
             if (oc.start_time() != AV_NOPTS_VALUE) {
                 timestamp += oc.start_time();
             }
@@ -1009,31 +612,29 @@ public class CustomFFmpegFrameGrabber extends FrameGrabber {
                 pkt2.size(0);
                 av_packet_unref(pkt);
             }
-            */
-/*     After the call of ffmpeg's avformat_seek_file(...) with the flag set to AVSEEK_FLAG_BACKWARD
- * the decoding position should be located before the requested timestamp in a closest position
- * from which all the active streams can be decoded successfully.
- * The following seeking consists of two stages:
- * 1. Grab frames till the frame corresponding to that "closest" position
- * (the first frame containing decoded data).
- *
- * 2. Grab frames till the desired timestamp is reached. The number of steps is restricted
- * by doubled estimation of frames between that "closest" position and the desired position.
- *
- * frameTypesToSeek parameter sets the preferred type of frames to seek.
- * It can be chosen from three possible types: VIDEO, AUDIO or any of them.
- * The setting means only a preference in the type. That is, if VIDEO or AUDIO is
- * specified but the file does not have video or audio stream - any type will be used instead.
- *
- *
- * TODO
- *  Sometimes the ffmpeg's avformat_seek_file(...) function brings us not to a position before
- *  the desired but few frames after.... What can be a the solution in this case if we really need
- *  a frame-precision seek? Probably we may try to request even earlier timestamp and look if this
- *  will bring us before the desired position.
- *
- *//*
-
+            /*     After the call of ffmpeg's avformat_seek_file(...) with the flag set to AVSEEK_FLAG_BACKWARD
+             * the decoding position should be located before the requested timestamp in a closest position
+             * from which all the active streams can be decoded successfully.
+             * The following seeking consists of two stages:
+             * 1. Grab frames till the frame corresponding to that "closest" position
+             * (the first frame containing decoded data).
+             *
+             * 2. Grab frames till the desired timestamp is reached. The number of steps is restricted
+             * by doubled estimation of frames between that "closest" position and the desired position.
+             *
+             * frameTypesToSeek parameter sets the preferred type of frames to seek.
+             * It can be chosen from three possible types: VIDEO, AUDIO or any of them.
+             * The setting means only a preference in the type. That is, if VIDEO or AUDIO is
+             * specified but the file does not have video or audio stream - any type will be used instead.
+             *
+             *
+             * TODO
+             *  Sometimes the ffmpeg's avformat_seek_file(...) function brings us not to a position before
+             *  the desired but few frames after.... What can be a the solution in this case if we really need
+             *  a frame-precision seek? Probably we may try to request even earlier timestamp and look if this
+             *  will bring us before the desired position.
+             *
+             */
 
             if (frameTypesToSeek != null) { //new code providing check of frame content while seeking to the timestamp
                 boolean has_video = hasVideo();
@@ -1089,14 +690,12 @@ public class CustomFFmpegFrameGrabber extends FrameGrabber {
                     frameGrabbed = true;
                 }
             } else { //old quick seeking code used in JavaCV versions prior to 1.4.1
-                */
-/* comparing to timestamp +/- 1 avoids rouding issues for framerates
+                /* comparing to timestamp +/- 1 avoids rouding issues for framerates
                 which are no proper divisors of 1000000, e.g. where
                 av_frame_get_best_effort_timestamp in grabFrame sets this.timestamp
                 to ...666 and the given timestamp has been rounded to ...667
                 (or vice versa)
-                 *//*
-
+                 */
                 int count = 0; // prevent infinite loops with corrupted files
                 while (this.timestamp > timestamp + 1 && grabFrame(true, true, false, false) != null && count++ < 1000) {
                     // flush frames if seeking backwards
@@ -1110,11 +709,9 @@ public class CustomFFmpegFrameGrabber extends FrameGrabber {
         }
     }
 
-    */
-/**
- * Returns {@link #getLengthInVideoFrames()}
- *//*
-
+    /**
+     * Returns {@link #getLengthInVideoFrames()}
+     */
     @Override
     public int getLengthInFrames() {
         // best guess...
@@ -1126,11 +723,9 @@ public class CustomFFmpegFrameGrabber extends FrameGrabber {
         return oc.duration() * 1000000L / AV_TIME_BASE;
     }
 
-    */
-/**
- * Returns {@code (int) Math.round(getLengthInTime() * getFrameRate() / 1000000L)}, which is an approximation in general.
- *//*
-
+    /**
+     * Returns {@code (int) Math.round(getLengthInTime() * getFrameRate() / 1000000L)}, which is an approximation in general.
+     */
     public int getLengthInVideoFrames() {
         // best guess...
         return (int) Math.round(getLengthInTime() * getFrameRate() / 1000000L);
@@ -1227,18 +822,14 @@ public class CustomFFmpegFrameGrabber extends FrameGrabber {
 
         // Retrieve stream information
 
-        */
-/**
- * We already know all parameters of our tello4j stream and this freezes the whole start call
- * We can just skip it to fix this issue
- *//*
+        /**
+         * We already know all parameters of our tello4j stream and this freezes the whole start call
+         * We can just skip it to fix this issue
+         */
 
-
- */
-/*if ((ret = avformat_find_stream_info(oc, (PointerPointer)null)) < 0) {
+        /*if ((ret = avformat_find_stream_info(oc, (PointerPointer)null)) < 0) {
             throw new Exception("avformat_find_stream_info() error " + ret + ": Could not find stream information.");
-        }*//*
-
+        }*/
 
         if (av_log_get_level() >= AV_LOG_INFO) {
             // Dump information about file onto standard error
@@ -1279,16 +870,12 @@ public class CustomFFmpegFrameGrabber extends FrameGrabber {
                 throw new Exception("avcodec_find_decoder() error: Unsupported video format or codec not found: " + video_par.codec_id() + ".");
             }
 
-            */
-/* Allocate a codec context for the decoder *//*
-
+            /* Allocate a codec context for the decoder */
             if ((video_c = avcodec_alloc_context3(codec)) == null) {
                 throw new Exception("avcodec_alloc_context3() error: Could not allocate video decoding context.");
             }
 
-            */
-/* copy the stream parameters from the muxer *//*
-
+            /* copy the stream parameters from the muxer */
             if ((ret = avcodec_parameters_to_context(video_c, video_st.codecpar())) < 0) {
                 releaseUnsafe();
                 throw new Exception("avcodec_parameters_to_context() error: Could not copy the video stream parameters.");
@@ -1334,16 +921,12 @@ public class CustomFFmpegFrameGrabber extends FrameGrabber {
                 throw new Exception("avcodec_find_decoder() error: Unsupported audio format or codec not found: " + audio_par.codec_id() + ".");
             }
 
-            */
-/* Allocate a codec context for the decoder *//*
-
+            /* Allocate a codec context for the decoder */
             if ((audio_c = avcodec_alloc_context3(codec)) == null) {
                 throw new Exception("avcodec_alloc_context3() error: Could not allocate audio decoding context.");
             }
 
-            */
-/* copy the stream parameters from the muxer *//*
-
+            /* copy the stream parameters from the muxer */
             if ((ret = avcodec_parameters_to_context(audio_c, audio_st.codecpar())) < 0) {
                 releaseUnsafe();
                 throw new Exception("avcodec_parameters_to_context() error: Could not copy the audio stream parameters.");
@@ -1730,9 +1313,7 @@ public class CustomFFmpegFrameGrabber extends FrameGrabber {
                         AVRational time_base = audio_st.time_base();
                         timestamp = 1000000L * pts * time_base.num() / time_base.den();
                         frame.samples = samples_buf;
-                        */
-/* if a frame has been decoded, output it *//*
-
+                        /* if a frame has been decoded, output it */
                         if (doProcessing) {
                             processSamples();
                         }
@@ -1842,4 +1423,3 @@ public class CustomFFmpegFrameGrabber extends FrameGrabber {
         }
     }
 }
-*/

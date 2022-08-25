@@ -6,23 +6,23 @@ import me.cubixor.telloapi.api.VideoListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 
 
 public class VideoManager extends VideoInfo {
 
-    //private final PipedInputStream videoInputStream = new PipedInputStream();
     private final List<VideoListener> videoListeners = new ArrayList<>();
     private final VideoServer videoServer;
-    //private final VideoFrameGrabber videoFrameGrabber;
     private BitRate bitRate;
     private float exposure;
+
+    private int iFrameInterval;
     private VideoMode videoMode = VideoMode.PHOTO;
     private SmartVideoMode smartVideoMode;
     private boolean smartVideoRunning;
 
     public VideoManager(Drone tello) {
         videoServer = new VideoServer(this, tello);
-        //videoFrameGrabber = new VideoFrameGrabber(this);
     }
 
     @Override
@@ -41,6 +41,11 @@ public class VideoManager extends VideoInfo {
 
     public void setExposure(float exposure) {
         this.exposure = exposure;
+    }
+
+    @Override
+    public int getIFrameInterval() {
+        return iFrameInterval;
     }
 
     @Override
@@ -70,11 +75,6 @@ public class VideoManager extends VideoInfo {
         this.smartVideoRunning = smartVideoRunning;
     }
 
-/*
-    public PipedInputStream getVideoInputStream() {
-        return videoInputStream;
-    }
-*/
 
     public List<VideoListener> getVideoListeners() {
         return videoListeners;
@@ -84,9 +84,25 @@ public class VideoManager extends VideoInfo {
         return videoServer;
     }
 
-/*
-    public VideoFrameGrabber getVideoFrameGrabber() {
-        return videoFrameGrabber;
+    @Override
+    public void startVideoStream(int iFrameInterval) {
+        this.iFrameInterval = iFrameInterval;
+
+        getVideoServer().getUdpReceiverThread().start();
+        getVideoServer().startVideoScheduler();
     }
-*/
+
+
+    @Override
+    public void updateIFrameInterval(int iFrameInterval) {
+        this.iFrameInterval = iFrameInterval;
+
+        ScheduledFuture<?> videoScheduler = getVideoServer().getVideoScheduler();
+        if (videoScheduler != null && !videoScheduler.isCancelled()) {
+            videoScheduler.cancel(true);
+        }
+        getVideoServer().startVideoScheduler();
+    }
+
+
 }

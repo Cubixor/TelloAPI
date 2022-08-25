@@ -1,17 +1,12 @@
 package me.cubixor.telloapi.utils;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-public class Utils {
+public class ByteUtils {
 
     private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
 
@@ -24,23 +19,6 @@ public class Utils {
         }
         return new String(hexChars, StandardCharsets.UTF_8);
     }
-
-/*    public static byte[] trim(byte[] data) {
-        int idx = 0;
-        while (idx < data.length) {
-            if (data[idx] != 0) {
-                break;
-            }
-            idx++;
-        }
-        byte[] trimmedData;
-        if (idx > 0 && idx < data.length) {
-            trimmedData = Arrays.copyOfRange(data, idx, data.length);
-        } else {
-            trimmedData = data;
-        }
-        return trimmedData;
-    }*/
 
     public static byte[] trim(byte[] bytes) {
         int i = bytes.length - 1;
@@ -80,26 +58,6 @@ public class Utils {
         }
 
         return true;
-    }
-
-    public static Set<Class<?>> findAllClassesUsingClassLoader(String packageName) {
-        InputStream stream = ClassLoader.getSystemClassLoader()
-                .getResourceAsStream(packageName.replaceAll("[.]", "/"));
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        return reader.lines()
-                .filter(line -> line.endsWith(".class"))
-                .map(line -> getClass(line, packageName))
-                .collect(Collectors.toSet());
-    }
-
-    private static Class<?> getClass(String className, String packageName) {
-        try {
-            return Class.forName(packageName + "."
-                    + className.substring(0, className.lastIndexOf('.')));
-        } catch (ClassNotFoundException e) {
-            // handle the exception
-        }
-        return null;
     }
 
 }

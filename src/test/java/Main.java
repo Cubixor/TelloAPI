@@ -1,41 +1,59 @@
-import me.cubixor.telloapi.api.*;
+import me.cubixor.telloapi.api.DroneConnectionListener;
+import me.cubixor.telloapi.api.Tello;
+import me.cubixor.telloapi.api.VideoListener;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.io.*;
 
-public class Main implements DroneStatusListener {
+public class Main {
 
-    public static final MyFrame jFrame = new MyFrame();
-    public static final Graphics g = jFrame.getGraphics();
-    //public static final Java2DFrameConverter conv = new Java2DFrameConverter();
+    public static PipedOutputStream pos;
+    public static PipedInputStream pis;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Tello tello = Tello.build();
-
-        //tello.addDroneStatusListener(new Main());
+        pis = new PipedInputStream();
+        pos = new PipedOutputStream(pis);
 
 
         tello.addConnectionListener(new DroneConnectionListener() {
             @Override
             public void onConnect() {
                 System.out.println("CONNECT");
-                tello.startVideoStream(300);
-                //tello.getPacketSender().sendTakeOffPacket();
-                //tello.setFastMode(true);
-                //tello.setAxis(0.2f, 0,0,0);
+
+                /*tello.getVideoInfo().startVideoStream(500);
+                tello.getPacketSender().sendChangeVideoAspectPacket(VideoInfo.VideoMode.VIDEO);
+
+                tello.getDroneAxis().setFastMode(false);
+
+                VideoFrameGrabber videoFrameGrabber = new VideoFrameGrabber(pis);
+                videoFrameGrabber.applyFrameSize(tello.getVideoInfo().getVideoMode());
 
                 ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
-                Runnable r2 = () -> {
-                    System.out.println("QUERYBITRATE");
-                    tello.getPacketSender().sendQueryBitratePacket();
+
+                Runnable r1 = () -> {
+                    tello.getPacketSender().sendStartRecordingPacket(true);
+                    System.out.println("recording");
                 };
-                executor.scheduleAtFixedRate(r2, 0, 5, TimeUnit.SECONDS);
+                Runnable r2 = () -> {
+                    tello.getPacketSender().sendStartRecordingPacket(false);
+                    System.out.println("not recording");
+                };
+
+                Runnable r3 = () -> {
+                    tello.getPacketSender().sendSetDynAdjRatePacket(true);
+                    System.out.println("dyn adj");
+                };
+                Runnable r4 = () -> {
+                    tello.getPacketSender().sendSetDynAdjRatePacket(false);
+                    System.out.println("not dyn adj");
+                };
+
+                executor.schedule(r1, 5, TimeUnit.SECONDS);
+                executor.schedule(r2, 15, TimeUnit.SECONDS);
+                executor.schedule(r3, 20, TimeUnit.SECONDS);
+                executor.schedule(r4, 30, TimeUnit.SECONDS);*/
             }
 
             @Override
@@ -45,59 +63,27 @@ public class Main implements DroneStatusListener {
         });
 
 
-        tello.addVideoListener(new VideoListener() {
-/*            @Override
-            public void onFrameReceived(Frame frame) {
-                BufferedImage image = conv.convert(frame);
-                g.drawImage(image, 10, 10, image.getWidth(), image.getHeight(), jFrame);
-            }*/
-
-            @Override
-            public void onVideoDataReceived(byte[] data) {
-
+        tello.addFileListener(data -> {
+            BufferedImage image = decodeImage(data);
+            //g.drawImage(image, 10, 10, image.getWidth(), image.getHeight(), jFrame);
+            try {
+                ImageIO.write(image, "jpg", new File("output_" + System.currentTimeMillis() + ".jpg"));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
 
-/*
-        tello.addFileListener(new FileReceiver() {
-            int i = 0;
-
+        tello.addVideoListener(new VideoListener() {
             @Override
-            public void onPhotoReceived(byte[] data) {
-                BufferedImage image = decodeImage(data);
-                g.drawImage(image, 10, 10, image.getWidth(), image.getHeight(), jFrame);
+            public void onVideoDataReceived(byte[] data) {
                 try {
-                    ImageIO.write(image, "jpg", new File("output" + i + ".jpg"));
-                    i++;
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    pos.write(data, 2, data.length - 2);
+                    pos.flush();
+                } catch (Exception ignored) {
                 }
             }
         });
-*/
-
-
-
-
-/*
-        Runnable r3 = () -> {
-            //tello.setAxis(0,0,0,0);
-        };
-
-        executor.schedule(r3, 15, TimeUnit.SECONDS);
-
-
-
-        Runnable r4 = () -> {
-            //tello.getPacketSender().sendLandPacket();
-        };
-
-        executor.schedule(r4, 15, TimeUnit.SECONDS);
-
-*/
-
     }
-
     public static BufferedImage decodeImage(byte[] data) {
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
         BufferedImage image = null;
@@ -107,20 +93,5 @@ public class Main implements DroneStatusListener {
             e.printStackTrace();
         }
         return image;
-    }
-
-    @Override
-    public void onLightStrengthPacketReceive(boolean lightOK) {
-        //System.out.println("LIGHT " + lightOK);
-    }
-
-    @Override
-    public void onWifiStrengthPacketReceive(int wifiStrength, int wifiInterference) {
-        //System.out.println("WIFI STRENGTH " + wifiStrength + "   INTERFERENCE " + wifiInterference);
-    }
-
-    @Override
-    public void onStatusPacketReceive(DroneStatus droneStatus) {
-
     }
 }

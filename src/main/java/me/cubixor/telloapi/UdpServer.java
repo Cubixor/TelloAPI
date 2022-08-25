@@ -1,25 +1,39 @@
 package me.cubixor.telloapi;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
+import java.net.*;
 
 public class UdpServer {
 
-    private final Drone tello;
     private final PacketDecoder packetDecoder;
+    private DatagramSocket socket;
+
 
     public UdpServer(Drone tello) {
-        this.tello = tello;
         packetDecoder = new PacketDecoder(tello);
 
-        Thread udpReceiverThread = new Thread(() -> {
+        setupSocket();
+        setupReceiver();
+    }
+
+    private void setupSocket() {
+        try {
+            socket = new DatagramSocket(null);
+            socket.setReuseAddress(true);
+            socket.bind(new InetSocketAddress(8889));
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setupReceiver() {
+        new Thread(() -> {
             int bufferSize = 2048;
 
             while (true) {
                 try {
                     DatagramPacket receivedPacket = new DatagramPacket(new byte[bufferSize], bufferSize);
-                    tello.getSocket().receive(receivedPacket);
+                    socket.receive(receivedPacket);
 
                     byte[] data = receivedPacket.getData();
                     packetDecoder.handlePacket(data);
@@ -28,16 +42,15 @@ public class UdpServer {
                     e.printStackTrace();
                 }
             }
-        });
-        udpReceiverThread.start();
+        }).start();
     }
 
-    public void sendEcho(byte[] buf) {
+
+    public void sendPacket(byte[] buf) {
         new Thread(() -> {
             try {
                 DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("192.168.10.1"), 8889);
-                tello.getSocket().send(packet);
-                //System.out.println("SEND " + Utils.bytesToHex(buf));
+                socket.send(packet);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import me.cubixor.telloapi.Drone;
 import me.cubixor.telloapi.logs.logpackets.*;
-import me.cubixor.telloapi.utils.Utils;
+import me.cubixor.telloapi.utils.ByteUtils;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -18,7 +18,29 @@ import java.util.List;
 
 public class LogDataManager {
 
-    private static Class<?>[] logPacketClasses;
+    private static final Class<?>[] logPacketClasses = new Class<?>[]{
+            OsdDataPacket.class,
+            UsonicPakcet.class,
+            MvoFeedbackPacket.class,
+            ControllerPacket.class,
+            AircraftConditionPacket.class,
+            SerialApiInputsPacket.class,
+            CtrlVertDebug.class,
+            CtrlVelVertDebug.class,
+            CtrlAccVertDebug.class,
+            CtrlHorizDebugPacket.class,
+            FlyLimitVelDebugPacket.class,
+            CtrlHorizAttiDebugPacket.class,
+            CtrlHorizAngVelDebugPacket.class,
+            CtrlAllocationDebugPacket.class,
+            MotorControlPacket.class,
+            BatteryInfoPacket.class,
+            ImuAtti0Packet.class,
+            ImuEx0Packet.class,
+            AttiMini0Packet.class,
+            NsDataDebugPacket.class,
+            NsDataComponentPacket.class,
+            AirCompensateDataPacket.class};
     private final Drone tello;
     private final StringBuilder raw = new StringBuilder();
     private final List<LogRecord> logRecords = new ArrayList<>();
@@ -31,7 +53,6 @@ public class LogDataManager {
         loadLogRecordsFromFiles(getFileFromResourceAsStream("logRecords.json"));
         loadLogRecordsFromFiles(getFileFromResourceAsStream("logRecordsUndefined.json"));
 
-        getClassesFromPackage();
     }
 
     public static Class<?> matchLogPacketClass(int id) {
@@ -47,46 +68,6 @@ public class LogDataManager {
         }
 
         return null;
-    }
-
-    public void getClassesFromPackage() {
-/*
-        Set<Class<?>> classes = Utils.findAllClassesUsingClassLoader(
-                "me.cubixor.telloapi.logs.logpackets");
-
-        logPacketClasses = new Class<?>[classes.size()];
-
-        int index = 0;
-        for (Class<?> clazz : classes) {
-            logPacketClasses[index] = clazz;
-            index++;
-        }
-*/
-
-        logPacketClasses = new Class<?>[]{
-                OsdDataPacket.class,
-                UsonicPakcet.class,
-                MvoFeedbackPacket.class,
-                ControllerPacket.class,
-                AircraftConditionPacket.class,
-                SerialApiInputsPacket.class,
-                CtrlVertDebug.class,
-                CtrlVelVertDebug.class,
-                CtrlAccVertDebug.class,
-                CtrlHorizDebugPacket.class,
-                FlyLimitVelDebugPacket.class,
-                CtrlHorizAttiDebugPacket.class,
-                CtrlHorizAngVelDebugPacket.class,
-                CtrlAllocationDebugPacket.class,
-                MotorControlPacket.class,
-                BatteryInfoPacket.class,
-                ImuAtti0Packet.class,
-                ImuEx0Packet.class,
-                AttiMini0Packet.class,
-                NsDataDebugPacket.class,
-                NsDataComponentPacket.class,
-                AirCompensateDataPacket.class
-        };
     }
 
     private void loadLogRecordsFromFiles(InputStream jsonFile) {
@@ -186,8 +167,8 @@ public class LogDataManager {
                 return;
             }
             byte crc = data[pos + 3];
-            int id = Utils.connectBytes(data[pos + 4], data[pos + 5]);
-            int tick = Utils.connectBytes(data[pos + 6], data[pos + 7], data[pos + 8], data[pos + 9]);
+            int id = ByteUtils.connectBytes(data[pos + 4], data[pos + 5]);
+            int tick = ByteUtils.connectBytes(data[pos + 6], data[pos + 7], data[pos + 8], data[pos + 9]);
             //int crcEnd = Utils.connectBytes(data[pos + len - 2], data[pos + len - 1]);
 
 /*
@@ -210,7 +191,7 @@ public class LogDataManager {
 
             //Log config packet id
             if (id == 65533) {
-                System.out.println("LOG CONFIG DECODED:    DATA: " + Utils.bytesToHex(dataDecrypted));
+                System.out.println("LOG CONFIG DECODED:    DATA: " + ByteUtils.bytesToHex(dataDecrypted));
                 handleLogConfigData(dataDecrypted);
                 continue;
             }

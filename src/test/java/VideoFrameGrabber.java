@@ -1,16 +1,19 @@
-/*
-package me.cubixor.telloapi.video;
-
 import me.cubixor.telloapi.api.VideoInfo;
-import me.cubixor.telloapi.api.VideoListener;
 import org.bytedeco.ffmpeg.global.avcodec;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.Java2DFrameConverter;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.PipedInputStream;
 
 public class VideoFrameGrabber {
 
-    private VideoManager videoManager;
     private CustomFFmpegFrameGrabber frameGrabber;
+    public static final Java2DFrameConverter conv = new Java2DFrameConverter();
+    public static final MyFrame jFrame = new MyFrame();
+    public static final Graphics g = jFrame.getGraphics();
     private final Thread videoThread = new Thread(() -> {
         try {
             frameGrabber.start();
@@ -24,10 +27,8 @@ public class VideoFrameGrabber {
             try {
                 frame = frameGrabber.grabImage();
 
-                for (VideoListener videoListener : videoManager.getVideoListeners()) {
-                    videoListener.onFrameReceived(frame);
-                }
-
+                BufferedImage image = conv.convert(frame);
+                g.drawImage(image, 10, 10, image.getWidth(), image.getHeight(), jFrame);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -35,15 +36,12 @@ public class VideoFrameGrabber {
     });
 
 
-    public VideoFrameGrabber(VideoManager videoManager) {
-        this.videoManager = videoManager;
-        frameGrabber = new CustomFFmpegFrameGrabber(videoManager.getVideoInputStream());
+    public VideoFrameGrabber(PipedInputStream pis) {
+        frameGrabber = new CustomFFmpegFrameGrabber(pis);
         frameGrabber.setImageMode(FrameGrabber.ImageMode.COLOR);
         frameGrabber.setFormat("h264");
         frameGrabber.setFrameRate(30);
         frameGrabber.setVideoCodec(avcodec.AV_CODEC_ID_H264);
-        frameGrabber.setImageWidth(videoManager.getVideoMode().getWidth());
-        frameGrabber.setImageHeight(videoManager.getVideoMode().getHeight());
         videoThread.start();
     }
 
@@ -60,4 +58,3 @@ public class VideoFrameGrabber {
         frameGrabber.setImageHeight(videoMode.getHeight());
     }
 }
-*/

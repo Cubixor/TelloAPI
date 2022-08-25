@@ -1,7 +1,7 @@
 package me.cubixor.telloapi;
 
 import me.cubixor.telloapi.api.DroneState;
-import me.cubixor.telloapi.utils.Utils;
+import me.cubixor.telloapi.utils.ByteUtils;
 
 import java.time.LocalDateTime;
 
@@ -55,11 +55,11 @@ public class DroneStateManager extends DroneState {
     }
 
     public void updateDroneStatus(byte[] payload) {
-        height = Utils.connectBytes(payload[0], payload[1]);
-        northSpeed = Utils.connectBytes(payload[2], payload[3]);
-        eastSpeed = Utils.connectBytes(payload[4], payload[5]);
-        groundSpeed = Utils.connectBytes(payload[6], payload[7]);
-        flyTime = Utils.connectBytes(payload[8], payload[9]);
+        height = ByteUtils.connectBytes(payload[0], payload[1]);
+        northSpeed = ByteUtils.connectBytes(payload[2], payload[3]);
+        eastSpeed = ByteUtils.connectBytes(payload[4], payload[5]);
+        groundSpeed = ByteUtils.connectBytes(payload[6], payload[7]);
+        flyTime = ByteUtils.connectBytes(payload[8], payload[9]);
 
         imuState = ((payload[10]) & 0x1) == 1;
         pressureState = ((payload[10] >> 1) & 0x1) == 1;
@@ -71,8 +71,8 @@ public class DroneStateManager extends DroneState {
 
         imuCalibrationState = payload[11];
         batteryPercentage = payload[12];
-        droneBatteryLeft = Utils.connectBytes(payload[13], payload[14]);
-        droneFlyTimeLeft = Utils.connectBytes(payload[15], payload[16]);
+        droneBatteryLeft = ByteUtils.connectBytes(payload[13], payload[14]);
+        droneFlyTimeLeft = ByteUtils.connectBytes(payload[15], payload[16]);
 
         eMSky = ((payload[17]) & 0x1) == 1;
         eMGround = ((payload[17] >> 1) & 0x1) == 1;

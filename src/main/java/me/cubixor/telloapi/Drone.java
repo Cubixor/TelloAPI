@@ -5,15 +5,11 @@ import me.cubixor.telloapi.logs.LogPacketListener;
 import me.cubixor.telloapi.photo.File;
 import me.cubixor.telloapi.video.VideoManager;
 
-import java.net.DatagramSocket;
-import java.net.InetSocketAddress;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class Drone extends Tello {
@@ -22,63 +18,46 @@ public class Drone extends Tello {
     private final VideoManager videoManager;
     private final PacketConstructor packetSender;
     private final DroneStateManager droneStateManager;
+    private final DroneAxisManager droneAxisManager;
     private final List<DroneStatusListener> droneStatusListeners = new ArrayList<>();
     private final List<FileReceiver> fileReceivers = new ArrayList<>();
     private final HashMap<Integer, File> pendingFiles = new HashMap<>();
     private final List<DroneConnectionListener> droneConnectionListeners = new ArrayList<>();
     private final List<LogPacketListener> logPacketListeners = new ArrayList<>();
-    int resetAxis = -1;
-    int lastMessage;
-    private DatagramSocket socket;
-    private float roll = 0;
-    private float pitch = 0;
-    private float throttle = 0;
-    private float yaw = 0;
-    private boolean fastMode = false;
+    private int lastMessage;
     private boolean connected = false;
 
-    private int iFrameInterval;
-    private ScheduledFuture<?> videoScheduler;
 
     public Drone(int reconnectMillis, int timeoutSecs) {
-        try {
-            System.out.println("START DRONE SERVER");
-            socket = new DatagramSocket(null);
-            socket.setReuseAddress(true);
-            socket.bind(new InetSocketAddress(8889));
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
 
+        udpServer = new UdpServer(this);
         videoManager = new VideoManager(this);
         droneStateManager = new DroneStateManager();
-        udpServer = new UdpServer(this);
+        droneAxisManager = new DroneAxisManager(this);
         packetSender = new PacketConstructor(this);
 
+        startConnectionThreads(reconnectMillis, timeoutSecs);
+    }
+
+    private void startConnectionThreads(int reconnectMillis, int timeoutSecs) {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+
         executor.scheduleAtFixedRate(() -> {
             if (!isConnected()) {
                 getPacketSender().sendConnectPacket();
-            } else {
-                Thread.currentThread().interrupt();
             }
         }, 0, reconnectMillis, TimeUnit.MILLISECONDS);
 
         executor.scheduleAtFixedRate(() -> {
-            if (connected) {
+            if (isConnected()) {
                 if (lastMessage == timeoutSecs) {
-                    connected = false;
-
-                    for (DroneConnectionListener droneConnectionListener : droneConnectionListeners) {
-                        droneConnectionListener.onDisconnect();
-                    }
-
-                    Thread.currentThread().interrupt();
+                    onDisconnect();
                 } else {
                     lastMessage++;
                 }
             }
         }, 0, 1, TimeUnit.SECONDS);
+
     }
 
     public void resetTimeout() {
@@ -99,30 +78,17 @@ public class Drone extends Tello {
         getPacketSender().sendQueryLowBatteryThresholdPacket();
         getPacketSender().sendQueryAttitudeLimitPacket();
 
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(() -> {
-            if (!isConnected()) {
-                executor.shutdown();
-                return;
-            }
-
-            int a1 = (int) (1024 + 660 * roll);
-            int a2 = (int) (1024 + 660 * pitch);
-            int a3 = (int) (1024 + 660 * throttle);
-            int a4 = (int) (1024 + 660 * yaw);
-            getPacketSender().sendSticksPacket(a1, a2, a3, a4, fastMode);
-
-            if (resetAxis == 0) {
-                resetAxis = -1;
-                setAxis(0, 0, 0, 0);
-            } else if (resetAxis > 0) {
-                resetAxis--;
-            }
-
-        }, 0, 20, TimeUnit.MILLISECONDS);
 
         for (DroneConnectionListener droneConnectionListener : droneConnectionListeners) {
             droneConnectionListener.onConnect();
+        }
+    }
+
+    public void onDisconnect() {
+        connected = false;
+
+        for (DroneConnectionListener droneConnectionListener : droneConnectionListeners) {
+            droneConnectionListener.onDisconnect();
         }
     }
 
@@ -162,13 +128,18 @@ public class Drone extends Tello {
     }
 
     @Override
-    public DroneState getDroneState() {
+    public DroneStateManager getDroneState() {
         return droneStateManager;
     }
 
     @Override
     public VideoManager getVideoInfo() {
         return videoManager;
+    }
+
+    @Override
+    public DroneAxisManager getDroneAxis() {
+        return droneAxisManager;
     }
 
     public HashMap<Integer, File> getPendingFiles() {
@@ -191,122 +162,9 @@ public class Drone extends Tello {
         return fileReceivers;
     }
 
-    public DatagramSocket getSocket() {
-        return socket;
-    }
-
     public UdpServer getUdpServer() {
         return udpServer;
     }
 
-    private void checkAxis(float axis) {
-        if (axis < -1.0f || axis > 1.0f) {
-            throw new IllegalArgumentException("Axis value must be between -1.0 and 1.0");
-        }
-    }
 
-    @Override
-    public float getRoll() {
-        return roll;
-    }
-
-    @Override
-    public void setRoll(float roll) {
-        this.roll = roll;
-    }
-
-    @Override
-    public float getPitch() {
-        return pitch;
-    }
-
-    @Override
-    public void setPitch(float pitch) {
-        this.pitch = pitch;
-    }
-
-    @Override
-    public float getThrottle() {
-        return throttle;
-    }
-
-    @Override
-    public void setThrottle(float throttle) {
-        this.throttle = throttle;
-    }
-
-    @Override
-    public float getYaw() {
-        return yaw;
-    }
-
-    @Override
-    public void setYaw(float yaw) {
-        this.yaw = yaw;
-    }
-
-    @Override
-    public boolean isFastMode() {
-        return fastMode;
-    }
-
-    @Override
-    public void setFastMode(boolean fastMode) {
-        this.fastMode = fastMode;
-    }
-
-    @Override
-    public float[] getAxis() {
-        float[] axis = new float[4];
-        axis[0] = roll;
-        axis[1] = pitch;
-        axis[2] = throttle;
-        axis[3] = yaw;
-        return axis;
-    }
-
-    @Override
-    public void setAxis(float roll, float pitch, float throttle, float yaw) {
-        checkAxis(roll);
-        checkAxis(pitch);
-        checkAxis(yaw);
-        checkAxis(throttle);
-
-        this.roll = roll;
-        this.pitch = pitch;
-        this.throttle = throttle;
-        this.yaw = yaw;
-    }
-
-    @Override
-    public void startVideoStream(int iFrameInterval) {
-        this.iFrameInterval = iFrameInterval;
-
-        videoManager.getVideoServer().getUdpReceiverThread().start();
-        //videoManager.getVideoFrameGrabber().getVideoThread().start();
-
-        startVideoScheduler();
-    }
-
-    private void startVideoScheduler() {
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        videoScheduler = executor.scheduleAtFixedRate(() -> {
-            if (!isConnected()) {
-                videoScheduler.cancel(true);
-                return;
-            }
-
-            getPacketSender().sendStartVideoPacket();
-        }, 0, iFrameInterval, TimeUnit.MILLISECONDS);
-    }
-
-    @Override
-    public void updateIFrameInterval(int iFrameInterval) {
-        this.iFrameInterval = iFrameInterval;
-
-        if (videoScheduler != null && !videoScheduler.isCancelled()) {
-            videoScheduler.cancel(true);
-        }
-        startVideoScheduler();
-    }
 }
