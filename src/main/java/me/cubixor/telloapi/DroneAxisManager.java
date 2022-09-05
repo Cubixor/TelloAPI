@@ -1,13 +1,16 @@
 package me.cubixor.telloapi;
 
 import me.cubixor.telloapi.api.DroneAxis;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class DroneAxisManager extends DroneAxis {
+public class DroneAxisManager implements DroneAxis {
 
+    private final Logger logger = LogManager.getLogger(DroneAxisManager.class);
     private final Drone tello;
     private float roll = 0;
     private float pitch = 0;
@@ -34,6 +37,8 @@ public class DroneAxisManager extends DroneAxis {
             if (resetTimeout == 0) {
                 resetTimeout = -1;
                 setAxis(0, 0, 0, 0);
+
+                logger.info("Completing starting/stopping motors procedure - axis reset");
             } else if (resetTimeout > 0) {
                 resetTimeout--;
             }

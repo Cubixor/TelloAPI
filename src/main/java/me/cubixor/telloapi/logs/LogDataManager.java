@@ -5,6 +5,8 @@ import com.google.gson.reflect.TypeToken;
 import me.cubixor.telloapi.Drone;
 import me.cubixor.telloapi.logs.logpackets.*;
 import me.cubixor.telloapi.utils.ByteUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -18,7 +20,8 @@ import java.util.List;
 
 public class LogDataManager {
 
-    private static final Class<?>[] logPacketClasses = new Class<?>[]{
+    private final Logger logger = LogManager.getLogger(LogDataManager.class);
+    private final Class<?>[] logPacketClasses = new Class<?>[]{
             OsdDataPacket.class,
             UsonicPakcet.class,
             MvoFeedbackPacket.class,
@@ -45,7 +48,6 @@ public class LogDataManager {
     private final StringBuilder raw = new StringBuilder();
     private final List<LogRecord> logRecords = new ArrayList<>();
     private LogRecord currentLogRecord;
-    private boolean complete = false;
 
     public LogDataManager(Drone tello) {
         this.tello = tello;
@@ -55,7 +57,7 @@ public class LogDataManager {
 
     }
 
-    public static Class<?> matchLogPacketClass(int id) {
+    public Class<?> matchLogPacketClass(int id) {
         for (Class<?> logPacketClass : logPacketClasses) {
             try {
                 int classID = (int) logPacketClass.getField("PACKET_ID").get(null);
@@ -101,9 +103,13 @@ public class LogDataManager {
             LogRecord logRecord = new LogRecord(name, Integer.parseInt(id));
             currentLogRecord = logRecord;
             logRecords.add(logRecord);
+
+            logger.info("New LogRecord created! Name: " + name + " ID: " + id);
         } else {
             LogField logField = createLogRecordField(dataString);
             currentLogRecord.getFields().add(logField);
+
+            logger.info("New LogField for LogRecord '" + currentLogRecord.getName() + "' created! " + logField);
         }
     }
 
@@ -122,19 +128,16 @@ public class LogDataManager {
     }
 
     public void setComplete() {
-        complete = true;
-        System.out.println("LOG CONFIG COMPLETE");
-
         for (LogRecord logRecord : logRecords) {
             logRecord.calculateSize();
         }
 
         saveRecordsToFile();
+
+        logger.info("Completed receiving log config packets! Saved log records: " + logRecords);
     }
 
     private void saveRecordsToFile() {
-        System.out.println(logRecords);
-
         Gson gson = new Gson();
 
         try (FileWriter jsonFile = new FileWriter("logRecords.json");
@@ -157,28 +160,20 @@ public class LogDataManager {
         while (pos < data.length) {
             byte magic = data[pos];
             if (magic != 0x55) {
-                //System.out.println("LOG DATA PACKET CORRUPT: " + Utils.bytesToHex(data));
+                logger.warn("Invalid log data packet - magic byte not equal to 0x55! Data: " + ByteUtils.bytesToHex(data));
                 return;
             }
             int len = data[pos + 1] & 0xff;
             byte alwaysZero = data[pos + 2];
             if (alwaysZero != 0) {
-                //System.out.println("LOG DATA PACKET CORRUPT: " + Utils.bytesToHex(data));
+                logger.warn("Invalid log data packet - always zero byte not equal to 0! Data: " + ByteUtils.bytesToHex(data));
                 return;
             }
-            byte crc = data[pos + 3];
+
+            //byte crc = data[pos + 3];
             int id = ByteUtils.connectBytes(data[pos + 4], data[pos + 5]);
             int tick = ByteUtils.connectBytes(data[pos + 6], data[pos + 7], data[pos + 8], data[pos + 9]);
-            //int crcEnd = Utils.connectBytes(data[pos + len - 2], data[pos + len - 1]);
-
-/*
-            int crcExpected = Crc.calcCRC8(data, 3);
-            byte[] dataNoCrc = Arrays.copyOfRange(data, pos, pos + len - 2);
-            int crcEndExpected = Crc.calcCRC16(dataNoCrc, dataNoCrc.length);
-            assert crcExpected == crc : "Invalid packet crc8";
-            assert crcEndExpected == crcEnd : "Invalid packet crc16";
-*/
-
+            //int crcEnd = ByteUtils.connectBytes(data[pos + len - 2], data[pos + len - 1]);
 
             byte xorValue = data[pos + 6];
             byte[] recordData = Arrays.copyOfRange(data, pos + 10, pos + len - 2);
@@ -191,8 +186,7 @@ public class LogDataManager {
 
             //Log config packet id
             if (id == 65533) {
-                System.out.println("LOG CONFIG DECODED:    DATA: " + ByteUtils.bytesToHex(dataDecrypted));
-                handleLogConfigData(dataDecrypted);
+                //handleLogConfigData(dataDecrypted);
                 continue;
             }
 
@@ -216,14 +210,15 @@ public class LogDataManager {
                 dataIndex += size;
             }
 
-            Class<?> logPacketClass = LogDataManager.matchLogPacketClass(id);
+            Class<?> logPacketClass = matchLogPacketClass(id);
             if (logPacketClass == null) {
-                //System.out.println("Unknown ID: " + id + " | LEN: " + (len - 12) + " | DATA: " + Utils.bytesToHex(dataDecrypted));
+                logger.warn("Unknown log packet ID! ID: " + id + " Length: " + (len - 12) + " Data: " + ByteUtils.bytesToHex(dataDecrypted));
                 continue;
             }
 
             try {
-                logPacketClass.getConstructor(Drone.class, int.class, Object[].class).newInstance(tello, tick, convertedFields);
+                Object instance = logPacketClass.getConstructor(Drone.class, int.class, Object[].class).newInstance(tello, tick, convertedFields);
+                logger.info("Decoded log packet! " + instance);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                      NoSuchMethodException e) {
                 throw new RuntimeException(e);
@@ -236,7 +231,7 @@ public class LogDataManager {
         InputStream inputStream = classLoader.getResourceAsStream(fileName);
 
         if (inputStream == null) {
-            throw new IllegalArgumentException("file not found! " + fileName);
+            throw new IllegalArgumentException("File not found! " + fileName);
         } else {
             return inputStream;
         }

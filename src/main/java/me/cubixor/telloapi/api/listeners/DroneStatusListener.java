@@ -1,4 +1,7 @@
-package me.cubixor.telloapi.api;
+package me.cubixor.telloapi.api.listeners;
+
+import me.cubixor.telloapi.api.DroneStatus;
+import me.cubixor.telloapi.api.video.SmartVideoMode;
 
 public interface DroneStatusListener {
 
@@ -14,7 +17,7 @@ public interface DroneStatusListener {
      * Called when Wi-Fi strength packed is received from a drone.
      *
      * @param wifiStrength     values rounded to 10, from 0 to 90
-     * @param wifiInterference TODO wifi interference
+     * @param wifiInterference TODO Wi-Fi interference
      */
     void onWifiStrengthPacketReceive(int wifiStrength, int wifiInterference);
 
@@ -35,6 +38,6 @@ public interface DroneStatusListener {
      * @param smartVideoMode last used video mode
      * @param running        is mentioned video mode running
      */
-    void onSmartVideoPacketReceive(VideoInfo.SmartVideoMode smartVideoMode, boolean running);
+    void onSmartVideoPacketReceive(SmartVideoMode smartVideoMode, boolean running);
 
 }

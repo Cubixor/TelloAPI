@@ -1,4 +1,4 @@
-import me.cubixor.telloapi.api.VideoInfo;
+import me.cubixor.telloapi.api.video.VideoMode;
 import org.bytedeco.ffmpeg.global.avcodec;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
@@ -53,7 +53,7 @@ public class VideoFrameGrabber {
         return videoThread;
     }
 
-    public void applyFrameSize(VideoInfo.VideoMode videoMode) {
+    public void applyFrameSize(VideoMode videoMode) {
         frameGrabber.setImageWidth(videoMode.getWidth());
         frameGrabber.setImageHeight(videoMode.getHeight());
     }

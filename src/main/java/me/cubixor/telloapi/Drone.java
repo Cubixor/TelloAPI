@@ -1,9 +1,16 @@
 package me.cubixor.telloapi;
 
-import me.cubixor.telloapi.api.*;
+import me.cubixor.telloapi.api.FlipDirection;
+import me.cubixor.telloapi.api.Tello;
+import me.cubixor.telloapi.api.listeners.DroneConnectionListener;
+import me.cubixor.telloapi.api.listeners.DroneStatusListener;
+import me.cubixor.telloapi.api.listeners.FileReceiver;
+import me.cubixor.telloapi.api.listeners.VideoListener;
 import me.cubixor.telloapi.logs.LogPacketListener;
 import me.cubixor.telloapi.photo.File;
 import me.cubixor.telloapi.video.VideoManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Drone extends Tello {
 
+    private final Logger logger = LogManager.getLogger(PacketDecoder.class);
     private final UdpServer udpServer;
     private final VideoManager videoManager;
     private final PacketConstructor packetSender;
@@ -32,9 +40,9 @@ public class Drone extends Tello {
 
         udpServer = new UdpServer(this);
         videoManager = new VideoManager(this);
-        droneStateManager = new DroneStateManager();
         droneAxisManager = new DroneAxisManager(this);
         packetSender = new PacketConstructor(this);
+        droneStateManager = new DroneStateManager(this);
 
         startConnectionThreads(reconnectMillis, timeoutSecs);
     }
@@ -82,6 +90,8 @@ public class Drone extends Tello {
         for (DroneConnectionListener droneConnectionListener : droneConnectionListeners) {
             droneConnectionListener.onConnect();
         }
+
+        logger.info("Connected to tello!");
     }
 
     public void onDisconnect() {
@@ -90,6 +100,28 @@ public class Drone extends Tello {
         for (DroneConnectionListener droneConnectionListener : droneConnectionListeners) {
             droneConnectionListener.onDisconnect();
         }
+
+        logger.info("Disconnected from tello!");
+    }
+
+    public HashMap<Integer, File> getPendingFiles() {
+        return pendingFiles;
+    }
+
+    public List<DroneStatusListener> getPacketReceivers() {
+        return droneStatusListeners;
+    }
+
+    public List<LogPacketListener> getLogPacketListeners() {
+        return logPacketListeners;
+    }
+
+    public List<FileReceiver> getFileReceivers() {
+        return fileReceivers;
+    }
+
+    public UdpServer getUdpServer() {
+        return udpServer;
     }
 
     @Override
@@ -122,7 +154,6 @@ public class Drone extends Tello {
         logPacketListeners.add(logPacketListener);
     }
 
-    @Override
     public PacketConstructor getPacketSender() {
         return packetSender;
     }
@@ -142,28 +173,55 @@ public class Drone extends Tello {
         return droneAxisManager;
     }
 
-    public HashMap<Integer, File> getPendingFiles() {
-        return pendingFiles;
+    @Override
+    public void takeOff() {
+        getPacketSender().sendTakeOffPacket();
     }
 
-    public DroneStateManager getDroneStateManager() {
-        return droneStateManager;
+    @Override
+    public void land(boolean bool) {
+        getPacketSender().sendLandPacket(bool);
     }
 
-    public List<DroneStatusListener> getPacketReceivers() {
-        return droneStatusListeners;
+    @Override
+    public void throwTakeOff() {
+        getPacketSender().sendThrowTakeoffPacket();
     }
 
-    public List<LogPacketListener> getLogPacketListeners() {
-        return logPacketListeners;
+    @Override
+    public void palmLand() {
+        getPacketSender().sendPalmLandPacket();
     }
 
-    public List<FileReceiver> getFileReceivers() {
-        return fileReceivers;
+    @Override
+    public void flip(FlipDirection flipDirection) {
+        getPacketSender().sendFlipPacket(flipDirection);
     }
 
-    public UdpServer getUdpServer() {
-        return udpServer;
+    @Override
+    public void bounceMode(boolean enable) {
+        getPacketSender().sendBounceModePacket(enable);
+    }
+
+    @Override
+    public void emergencyStop() {
+        getPacketSender().sendEmergencyPacket();
+    }
+
+    @Override
+    public void startMotors() {
+        getDroneAxis().resetLater();
+        getDroneAxis().setAxis(-1, -1, -1, 1);
+
+        logger.info("Beginning starting motors procedure - axis set to -1, -1, -1, 1");
+    }
+
+    @Override
+    public void stopMotors() {
+        getDroneAxis().resetLater();
+        getDroneAxis().setAxis(0, 0, -1, 0);
+
+        logger.info("Beginning stopping motors procedure - axis set to 0, 0, -1, 0");
     }
 
 

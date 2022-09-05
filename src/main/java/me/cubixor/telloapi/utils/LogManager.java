@@ -2,6 +2,7 @@ package me.cubixor.telloapi.utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class LogManager {
 
@@ -10,13 +11,6 @@ public class LogManager {
     public static String logFile = null;
 
     private static FileOutputStream logFileOutputStream;
-
-    private LogManager() {
-    }
-
-    public static LogManager getInstance() {
-        return C1546a.instance;
-    }
 
     public void createFile() {
         File file = new File(folderPath);
@@ -27,6 +21,10 @@ public class LogManager {
     }
 
     public void writeToFile(byte[] data) {
+        if (logFile == null) {
+            createFile();
+        }
+
         if (data != null && data.length > 0) {
             if (logFile == null) {
                 createFile();
@@ -36,30 +34,15 @@ public class LogManager {
                 logFileOutputStream = fileOutputStream;
                 fileOutputStream.write(data);
                 logFileOutputStream.flush();
+            } catch (Throwable t) {
+                t.printStackTrace();
+            } finally {
                 try {
                     logFileOutputStream.close();
-                } catch (Exception e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } catch (Exception e2) {
-                //C1575t.m5171a(e2.getMessage());
-                try {
-                    logFileOutputStream.close();
-                } catch (Exception e3) {
-                    e3.printStackTrace();
-                }
-            } catch (Throwable th) {
-                try {
-                    logFileOutputStream.close();
-                } catch (Exception e4) {
-                    e4.printStackTrace();
-                }
-                throw th;
             }
         }
-    }
-
-    private static class C1546a {
-        public static LogManager instance = new LogManager();
     }
 }

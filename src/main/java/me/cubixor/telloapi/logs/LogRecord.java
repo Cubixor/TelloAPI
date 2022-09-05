@@ -32,7 +32,6 @@ public class LogRecord implements Serializable {
         for (LogField logField : getFields()) {
             size += LogDataType.matchByName(logField.getDataType()).getSize();
         }
-        System.out.println(name + " size: " + size);
     }
 
     public List<LogField> getFields() {

@@ -1,21 +1,21 @@
 package me.cubixor.telloapi.api;
 
-public abstract class DroneAxis {
-    public abstract float getRoll();
+public interface DroneAxis {
+    float getRoll();
 
-    public abstract void setRoll(float roll);
+    void setRoll(float roll);
 
-    public abstract float getPitch();
+    float getPitch();
 
-    public abstract void setPitch(float pitch);
+    void setPitch(float pitch);
 
-    public abstract float getThrottle();
+    float getThrottle();
 
-    public abstract void setThrottle(float throttle);
+    void setThrottle(float throttle);
 
-    public abstract float getYaw();
+    float getYaw();
 
-    public abstract void setYaw(float yaw);
+    void setYaw(float yaw);
 
     /**
      * Indicates whether drone is in fast or slow mode
@@ -27,7 +27,7 @@ public abstract class DroneAxis {
      *
      * @return true if drone is in fast (sport) mode and false if drone is in slow (video) mode
      */
-    public abstract boolean isFastMode();
+    boolean isFastMode();
 
     /**
      * Sets if drone should be in fast or slow mode
@@ -39,7 +39,7 @@ public abstract class DroneAxis {
      *
      * @param fastMode true for fast mode, false for slow mode
      */
-    public abstract void setFastMode(boolean fastMode);
+    void setFastMode(boolean fastMode);
 
     /**
      * Sets all drone axis at once
@@ -49,10 +49,10 @@ public abstract class DroneAxis {
      * @param throttle throttle value (from -1.0 to 1.0)
      * @param yaw      yaw value (from -1.0 to 1.0)
      */
-    public abstract void setAxis(float roll, float pitch, float throttle, float yaw);
+    void setAxis(float roll, float pitch, float throttle, float yaw);
 
     /**
      * Sets all drone axis to neutral 0
      */
-    public abstract void resetAxis();
+    void resetAxis();
 }

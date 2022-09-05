@@ -20,7 +20,7 @@ public class UsonicPakcet extends LogPacket {
         usonicCnt = (short) data[2];
 
         for (LogPacketListener logPacketListener : drone.getLogPacketListeners()) {
-            logPacketListener.onUsonciPacketReceived(this);
+            logPacketListener.onUSonicPacketReceived(this);
         }
     }
 

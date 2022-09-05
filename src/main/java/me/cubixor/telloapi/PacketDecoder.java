@@ -1,13 +1,16 @@
 package me.cubixor.telloapi;
 
-import me.cubixor.telloapi.api.DroneStatusListener;
-import me.cubixor.telloapi.api.FileReceiver;
-import me.cubixor.telloapi.api.VideoInfo;
+import me.cubixor.telloapi.api.DroneStatus;
+import me.cubixor.telloapi.api.listeners.DroneStatusListener;
+import me.cubixor.telloapi.api.listeners.FileReceiver;
+import me.cubixor.telloapi.api.video.SmartVideoMode;
 import me.cubixor.telloapi.logs.LogDataManager;
 import me.cubixor.telloapi.photo.File;
 import me.cubixor.telloapi.photo.FileChunk;
 import me.cubixor.telloapi.photo.FilePiece;
 import me.cubixor.telloapi.utils.ByteUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -18,7 +21,9 @@ import java.util.Arrays;
 public class PacketDecoder {
 
     private final Drone tello;
-    LogDataManager logDataManager;
+    private final Logger logger = LogManager.getLogger(PacketDecoder.class);
+
+    private final LogDataManager logDataManager;
 
     public PacketDecoder(Drone tello) {
         this.tello = tello;
@@ -34,16 +39,14 @@ public class PacketDecoder {
             MessageType messageType = MessageType.getMessageType(messageID);
             byte[] payload = trimmed.length > 11 ? Arrays.copyOfRange(trimmed, 9, trimmed.length - 2) : new byte[0];
 
-            //System.out.println(messageType.toString() + " " + Utils.bytesToHex(payload));
-
             tello.resetTimeout();
-            decodePacket(messageType, payload, trimmed);
+            decodePacket(messageType, payload);
         } else if (ByteUtils.startsWith(trimmed, "conn_ack:".getBytes())) {
             tello.onConnect();
         }
     }
 
-    private void decodePacket(MessageType messageType, byte[] payload, byte[] fullData) {
+    private void decodePacket(MessageType messageType, byte[] payload) {
         switch (messageType) {
             case QUERY_SSID: {
                 decodeSSIDPacket(payload);
@@ -57,12 +60,24 @@ public class PacketDecoder {
                 decodeRegionPacket(payload);
                 break;
             }
+            case SET_SSID: {
+                decodeSetSSIDPacket(payload);
+                break;
+            }
+            case SET_PASSWORD: {
+                decodeSetPasswordPacket(payload);
+                break;
+            }
+            case SET_REGION: {
+                decodeSetRegionPacket(payload);
+                break;
+            }
             case QUERY_VERSION: {
                 decodeVersionPacket(payload);
                 break;
             }
             case SET_DATE_TIME: {
-                decodeDateTimePacket();
+                decodeDateTimePacket(payload);
                 break;
             }
             case QUERY_ACTIVATION_TIME: {
@@ -118,7 +133,7 @@ public class PacketDecoder {
                 break;
             }
             case LOG_CONFIG: {
-                //decodeLogConfigPacket(payload);
+                decodeLogConfigPacket(payload);
                 break;
             }
             case QUERY_HEIGHT_LIMIT: {
@@ -133,45 +148,82 @@ public class PacketDecoder {
                 decodeAttitudeLimitPacket(payload);
                 break;
             }
+            case SET_HEIGHT_LIMIT: {
+                decodeSetHeightLimitPacket(payload);
+                break;
+            }
+            case SET_ATTITUDE_LIMIT: {
+                decodeSetAttitudeLimitPacket(payload);
+                break;
+            }
+            case SET_LOW_BATTERY_THRESHOLD: {
+                decodeSetLowBatteryThresholdPacket(payload);
+                break;
+            }
             default: {
-                System.out.println("RECEIVE;   SIZE: " + fullData.length + "   DATA: " + ByteUtils.bytesToHex(fullData));
+                logger.warn("Unknown packet received! Size: " + payload.length + " Data: " + ByteUtils.bytesToHex(payload));
                 break;
             }
         }
     }
 
     private void decodeSSIDPacket(byte[] payload) {
-        byte[] data = Arrays.copyOfRange(payload, 1, payload.length);
+        byte[] data = Arrays.copyOfRange(payload, 2, payload.length);
         String ssid = new String(data, StandardCharsets.UTF_8);
-        tello.getDroneStateManager().setWifiSSID(ssid);
+        tello.getDroneState().setWifiSSID(ssid);
+
+        log(MessageType.QUERY_SSID, ssid);
     }
 
     private void decodePasswordPacket(byte[] payload) {
         byte[] data = Arrays.copyOfRange(payload, 2, payload.length);
         String password = new String(data, StandardCharsets.UTF_8);
-        tello.getDroneStateManager().setWifiPassword(password);
+        tello.getDroneState().setWifiPassword(password);
+
+        log(MessageType.QUERY_PASSWORD, password);
     }
 
     private void decodeRegionPacket(byte[] payload) {
         byte[] data = ByteUtils.trim(Arrays.copyOfRange(payload, 1, payload.length));
         String region = new String(data, StandardCharsets.UTF_8);
-        tello.getDroneStateManager().setWifiRegion(region);
+        tello.getDroneState().setWifiRegion(region);
+
+        log(MessageType.QUERY_REGION, region);
+    }
+
+
+    private void decodeSetSSIDPacket(byte[] payload) {
+        log(MessageType.SET_SSID, ByteUtils.bytesToHex(payload));
+    }
+
+    private void decodeSetPasswordPacket(byte[] payload) {
+        log(MessageType.SET_PASSWORD, ByteUtils.bytesToHex(payload));
+    }
+
+    private void decodeSetRegionPacket(byte[] payload) {
+        log(MessageType.SET_REGION, ByteUtils.bytesToHex(payload));
     }
 
     private void decodeVersionPacket(byte[] payload) {
         byte[] data = ByteUtils.trim(Arrays.copyOfRange(payload, 1, payload.length));
         String version = new String(data, StandardCharsets.UTF_8);
-        tello.getDroneStateManager().setVersion(version);
+        tello.getDroneState().setVersion(version);
+
+        log(MessageType.QUERY_VERSION, version);
     }
 
-    private void decodeDateTimePacket() {
+    private void decodeDateTimePacket(byte[] payload) {
         tello.getPacketSender().sendSetDateTimePacket(LocalDateTime.now());
+
+        log(MessageType.SET_DATE_TIME, ByteUtils.bytesToHex(payload));
     }
 
     private void decodeLoaderVersionPacket(byte[] payload) {
         byte[] data = ByteUtils.trim(Arrays.copyOfRange(payload, 1, payload.length));
         String version = new String(data, StandardCharsets.UTF_8);
-        tello.getDroneStateManager().setLoaderVersion(version);
+        tello.getDroneState().setLoaderVersion(version);
+
+        log(MessageType.QUERY_LOADER_VERSION, version);
     }
 
     private void decodeActivationTimePacket(byte[] payload) {
@@ -192,14 +244,16 @@ public class PacketDecoder {
         String sn = new String(Arrays.copyOfRange(payload, 15, 30), StandardCharsets.UTF_8);
 
         LocalDateTime activationTime = LocalDateTime.of(year, month, day, hour, minute, second, zero);
-        tello.getDroneStateManager().setActivationTime(activationTime);
+        tello.getDroneState().setActivationTime(activationTime);
+
+        log(MessageType.QUERY_ACTIVATION_TIME, "Activation time: " + activationTime + " Serial number: " + sn);
     }
 
     //Not working
     //Always getting same two bytes - 00 00
     //After reading the original app's code it looks like this was never working, as the code for receiving bitrate just gets the second byte and does nothing else with it.
     private void decodeBitratePacket(byte[] payload) {
-        System.out.println("BITRATE " + ByteUtils.bytesToHex(payload));
+        log(MessageType.QUERY_BITRATE, ByteUtils.bytesToHex(payload));
     }
 
 
@@ -209,11 +263,13 @@ public class PacketDecoder {
         }
         boolean lightOK = payload[0] == 0;
 
-        tello.getDroneStateManager().setLightOK(lightOK);
+        tello.getDroneState().setLightOK(lightOK);
 
         for (DroneStatusListener listener : tello.getPacketReceivers()) {
             listener.onLightStrengthPacketReceive(lightOK);
         }
+
+        log(MessageType.LIGHT_STRENGTH, Boolean.toString(lightOK));
     }
 
     private void decodeWifiStrengthPacket(byte[] payload) {
@@ -224,20 +280,22 @@ public class PacketDecoder {
         int wifiStrength = payload[0];
         int wifiInterference = payload[1];
 
-        tello.getDroneStateManager().setWifiStrength(wifiStrength);
-        tello.getDroneStateManager().setWifiInterference(wifiInterference);
+        tello.getDroneState().setWifiStrength(wifiStrength);
+        tello.getDroneState().setWifiInterference(wifiInterference);
 
         for (DroneStatusListener listener : tello.getPacketReceivers()) {
             listener.onWifiStrengthPacketReceive(wifiStrength, wifiInterference);
         }
+
+        log(MessageType.WIFI_STRENGTH, "Strength: " + wifiStrength + " Interference: " + wifiInterference);
     }
 
     private void decodeTakeoffPacket(byte[] payload) {
-        System.out.println("takeoff " + ByteUtils.bytesToHex(payload));
+        log(MessageType.TAKEOFF, ByteUtils.bytesToHex(payload));
     }
 
     private void decodeLandPacket(byte[] payload) {
-        System.out.println("land " + ByteUtils.bytesToHex(payload));
+        log(MessageType.LAND, ByteUtils.bytesToHex(payload));
     }
 
     private void decodeStatusPacket(byte[] payload) {
@@ -247,11 +305,13 @@ public class PacketDecoder {
             return;
         }
 
-        tello.getDroneStateManager().updateDroneStatus(payload);
+        DroneStatus droneStatus = tello.getDroneState().updateDroneStatus(payload);
 
         for (DroneStatusListener listener : tello.getPacketReceivers()) {
-            listener.onStatusPacketReceive(tello.getDroneStateManager());
+            listener.onStatusPacketReceive(droneStatus);
         }
+
+        log(MessageType.STATUS, droneStatus.toString());
     }
 
     private void decodeFileSizePacket(byte[] payload) {
@@ -261,7 +321,7 @@ public class PacketDecoder {
         tello.getPendingFiles().put(fileID, new File(fileID, fileSize));
         tello.getPacketSender().sendFileSizePacket();
 
-        System.out.println("FILESIZE  " + tello.getPendingFiles().get(fileID));
+        log(MessageType.FILE_SIZE, "File size: " + fileSize + " File ID: " + fileID);
     }
 
     private void decodeFileDataPacket(byte[] payload) {
@@ -273,8 +333,7 @@ public class PacketDecoder {
 
         File file = tello.getPendingFiles().get(fileID);
 
-        System.out.println("FILE:" + fileID + "  FILESIZE:" + file.getFileSize() + "  FILECURRENTSIZE:" + file.getCurrentSize() + "   FILEPIECE:" + filePieceID + "  FILECHUNK:" + fileChunkID + " CHUNKSIZE:" + fileChunkLength + " ACTUALCHUNKSIZE:" + data.length);
-
+        log(MessageType.FILE_DATA, "File ID: " + fileID + " File piece ID: " + filePieceID + " File chunk ID :" + fileChunkID + " File chunk length: " + fileChunkLength + " File chunk data: " + ByteUtils.bytesToHex(data));
 
         if (file.isReceived()) {
             return;
@@ -299,7 +358,6 @@ public class PacketDecoder {
             tello.getPacketSender().sendFileCompletePacket(fileID, file.getFileSize());
             file.setReceived(true);
 
-            System.out.println(file);
 
             byte[] b = file.toByteArray();
 
@@ -307,52 +365,48 @@ public class PacketDecoder {
                 fileReceiver.onPhotoReceived(b);
             }
 
+            logger.info("Received full photo! " + file);
+
             return;
         }
 
         if (!Arrays.asList(filePiece.getFileChunks()).contains(null)) {
-            System.out.println("SEND PIECE DONE   PIECE:" + filePieceID);
             tello.getPacketSender().sendFileDataPacket(false, fileID, filePieceID);
         }
 
     }
 
     private void decodeSmartVideoStatus(byte[] payload) {
-        System.out.println("SMARTVIDEO " + ByteUtils.bytesToHex(payload));
-
         if (payload.length == 0) {
             return;
         }
 
         byte videoModeID = (byte) (payload[0] >> 5);
-        VideoInfo.SmartVideoMode videoMode = VideoInfo.SmartVideoMode.getByID(videoModeID);
+        SmartVideoMode videoMode = SmartVideoMode.getByID(videoModeID);
         boolean running = (payload[0] >> 3 & 1) == 1;
 
         tello.getVideoInfo().setSmartVideoMode(videoMode);
         tello.getVideoInfo().setSmartVideoRunning(running);
 
-        System.out.println("SMARTVIDEOMODE " + tello.getVideoInfo().getSmartVideoMode());
-        System.out.println("SMARTVIDEORUNNING " + tello.getVideoInfo().isSmartVideoRunning());
-
         for (DroneStatusListener droneStatusListener : tello.getPacketReceivers()) {
             droneStatusListener.onSmartVideoPacketReceive(videoMode, running);
         }
+
+        log(MessageType.SMART_VIDEO_STATUS, "Video mode: " + videoMode + " Is running: " + running);
     }
 
     private void decodeLogHeaderPacket(byte[] payload) {
-        System.out.println("LOG HEADER:    SIZE: " + payload.length + "   DATA: " + ByteUtils.bytesToHex(payload));
         short seqId = (short) ByteUtils.connectBytes(payload[0], payload[1]);
         byte[] data = Arrays.copyOfRange(payload, 3, payload.length);
 
-        //LogManager.getInstance().createFile();
         //LogManager.getInstance().writeToFile(data);
 
         tello.getPacketSender().sendLogHeaderAckPacket(seqId);
+
+        log(MessageType.LOG_HEADER, "Sequence ID: " + seqId + " Data: " + ByteUtils.bytesToHex(data));
     }
 
     private void decodeLogDataPacket(byte[] payload) {
-        //System.out.println("LOG DATA:    SIZE: " + payload.length + "   DATA: " + Utils.bytesToHex(payload));
-
         byte[] data = Arrays.copyOfRange(payload, 1, payload.length);
         logDataManager.decodeLog(data);
 
@@ -360,8 +414,6 @@ public class PacketDecoder {
     }
 
     private void decodeLogConfigPacket(byte[] payload) {
-        System.out.println("LOG CONFIG:    SIZE: " + payload.length + "   DATA: " + ByteUtils.bytesToHex(payload));
-
         byte[] data = Arrays.copyOfRange(payload, 8, payload.length);
         short data1 = ByteBuffer.wrap(Arrays.copyOfRange(payload, 1, 3)).order(ByteOrder.LITTLE_ENDIAN).getShort();
         int data2 = ByteBuffer.wrap(Arrays.copyOfRange(payload, 3, 7)).order(ByteOrder.LITTLE_ENDIAN).getInt();
@@ -379,11 +431,15 @@ public class PacketDecoder {
     }
 
     private void decodeHeightLimitPacket(byte[] payload) {
-        tello.getDroneStateManager().setHeightLimit(payload[1]);
+        tello.getDroneState().setHeightLimit(payload[1]);
+
+        log(MessageType.QUERY_HEIGHT_LIMIT, String.valueOf(payload[1]));
     }
 
     private void decodeLowBatteryThresholdPacket(byte[] payload) {
-        tello.getDroneStateManager().setLowBatteryThreshold(payload[1]);
+        tello.getDroneState().setLowBatteryThreshold(payload[1]);
+
+        log(MessageType.QUERY_LOW_BATTERY_THRESHOLD, String.valueOf(payload[1]));
     }
 
     private void decodeAttitudeLimitPacket(byte[] payload) {
@@ -396,7 +452,31 @@ public class PacketDecoder {
             attitude = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).getFloat();
         }
 
-        tello.getDroneStateManager().setMaxAttitudeAngle(attitude);
+        tello.getDroneState().setMaxAttitudeAngle(attitude);
+
+        log(MessageType.QUERY_ATTITUDE_LIMIT, String.valueOf(attitude));
+    }
+
+    private void decodeSetHeightLimitPacket(byte[] payload) {
+        tello.getPacketSender().sendQueryHeightLimitPacket();
+
+        log(MessageType.SET_HEIGHT_LIMIT, ByteUtils.bytesToHex(payload));
+    }
+
+    private void decodeSetAttitudeLimitPacket(byte[] payload) {
+        tello.getPacketSender().sendQueryAttitudeLimitPacket();
+
+        log(MessageType.SET_ATTITUDE_LIMIT, ByteUtils.bytesToHex(payload));
+    }
+
+    private void decodeSetLowBatteryThresholdPacket(byte[] payload) {
+        tello.getPacketSender().sendQueryLowBatteryThresholdPacket();
+
+        log(MessageType.SET_LOW_BATTERY_THRESHOLD, ByteUtils.bytesToHex(payload));
+    }
+
+    private void log(MessageType messageType, String data) {
+        logger.info(String.format("Received packet! Type: %s; Data: %s", messageType, data));
     }
 
 }

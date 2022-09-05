@@ -1,8 +1,10 @@
 package me.cubixor.telloapi.video;
 
 import me.cubixor.telloapi.Drone;
-import me.cubixor.telloapi.api.VideoListener;
+import me.cubixor.telloapi.api.listeners.VideoListener;
 import me.cubixor.telloapi.utils.ByteUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -16,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 public class VideoServer {
 
+    private final Logger logger = LogManager.getLogger(VideoServer.class);
     private final int bufferSize = 1460;
     private final Drone tello;
     private final VideoManager videoManager;
@@ -76,20 +79,18 @@ public class VideoServer {
         //byte[] dataNoTick = Arrays.copyOfRange(dataTrimmed, 2, dataTrimmed.length);
 
         int tick = ByteBuffer.wrap(dataTrimmed, 0, 2).getShort() & 0xffff;
-        int nalType = data[6] & 0x1f;
-
 
         if (!streamAligned) {
-            System.out.println("NOT ALIGNED:   LEN: " + dataTrimmed.length + "   TICK: " + tick + "   NAL TYPE: " + nalType + "   DATA: " + ByteUtils.bytesToHex(dataTrimmed));
-
             if (length != bufferSize) {
                 streamAligned = true;
                 tello.getPacketSender().sendStartVideoPacket();
             }
+            logger.debug("Video data received!; NOT ALIGNED - IGNORING! Tick: " + tick + " Size: " + dataTrimmed.length + " Data: " + ByteUtils.bytesToHex(dataTrimmed));
         } else {
             for (VideoListener videoListener : videoManager.getVideoListeners()) {
                 videoListener.onVideoDataReceived(data);
             }
+            logger.debug("Video data received; Tick: " + tick + " Size: " + dataTrimmed.length + " Data: " + ByteUtils.bytesToHex(dataTrimmed));
         }
     }
 

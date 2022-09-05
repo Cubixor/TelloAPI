@@ -1,12 +1,14 @@
 package me.cubixor.telloapi;
 
 import me.cubixor.telloapi.api.DroneState;
+import me.cubixor.telloapi.api.DroneStatus;
 import me.cubixor.telloapi.utils.ByteUtils;
 
 import java.time.LocalDateTime;
 
 public class DroneStateManager extends DroneState {
 
+    private final PacketConstructor packetConstructor;
     private boolean lightOK;
     private int wifiStrength;
     private int wifiInterference;
@@ -21,6 +23,10 @@ public class DroneStateManager extends DroneState {
     private int heightLimit;
     private int lowBatteryThreshold;
     private float maxAttitudeAngle;
+
+    public DroneStateManager(Drone tello) {
+        packetConstructor = tello.getPacketSender();
+    }
 
     @Override
     public int getFlySpeed() {
@@ -54,7 +60,7 @@ public class DroneStateManager extends DroneState {
         this.wifiInterference = wifiInterference;
     }
 
-    public void updateDroneStatus(byte[] payload) {
+    public DroneStatus updateDroneStatus(byte[] payload) {
         height = ByteUtils.connectBytes(payload[0], payload[1]);
         northSpeed = ByteUtils.connectBytes(payload[2], payload[3]);
         eastSpeed = ByteUtils.connectBytes(payload[4], payload[5]);
@@ -95,6 +101,8 @@ public class DroneStateManager extends DroneState {
         temperatureHeight = ((payload[23]) & 0x1) == 1;
 
         flySpeed = (int) Math.sqrt(Math.pow(this.northSpeed, 2.0d) + Math.pow(this.eastSpeed, 2.0d));
+
+        return this;
     }
 
     @Override
@@ -257,34 +265,6 @@ public class DroneStateManager extends DroneState {
         return windState;
     }
 
-
-    @Override
-    public String getWifiSSID() {
-        return wifiSSID;
-    }
-
-    public void setWifiSSID(String wifiSSID) {
-        this.wifiSSID = wifiSSID;
-    }
-
-    @Override
-    public String getWifiPassword() {
-        return wifiPassword;
-    }
-
-    public void setWifiPassword(String wifiPassword) {
-        this.wifiPassword = wifiPassword;
-    }
-
-    @Override
-    public String getWifiRegion() {
-        return wifiRegion;
-    }
-
-    public void setWifiRegion(String wifiRegion) {
-        this.wifiRegion = wifiRegion;
-    }
-
     @Override
     public String getVersion() {
         return version;
@@ -313,8 +293,55 @@ public class DroneStateManager extends DroneState {
     }
 
     @Override
+    public String getWifiSSID() {
+        return wifiSSID;
+    }
+
+    public void setWifiSSID(String wifiSSID) {
+        this.wifiSSID = wifiSSID;
+    }
+
+    @Override
+    public void updateWifiSSID(String ssid) {
+        packetConstructor.sendSetSSIDPacket(ssid);
+    }
+
+    @Override
+    public String getWifiPassword() {
+        return wifiPassword;
+    }
+
+    public void setWifiPassword(String wifiPassword) {
+        this.wifiPassword = wifiPassword;
+    }
+
+    @Override
+    public void updateWifiPassword(String password) {
+        packetConstructor.sendSetPasswordPacket(password);
+    }
+
+    @Override
+    public String getWifiRegion() {
+        return wifiRegion;
+    }
+
+    public void setWifiRegion(String wifiRegion) {
+        this.wifiRegion = wifiRegion;
+    }
+
+    @Override
+    public void updateWifiRegion(String region) {
+        packetConstructor.sendSetRegionPacket(region);
+    }
+
+    @Override
     public int getHeightLimit() {
         return heightLimit;
+    }
+
+    @Override
+    public void updateHeightLimit(short height) {
+        packetConstructor.sendSetHeightLimitPacket(height);
     }
 
     public void setHeightLimit(int heightLimit) {
@@ -326,6 +353,11 @@ public class DroneStateManager extends DroneState {
         return lowBatteryThreshold;
     }
 
+    @Override
+    public void updateLowBatteryThreshold(short battery) {
+        packetConstructor.sendSetLowBatteryThresholdPacket(battery);
+    }
+
     public void setLowBatteryThreshold(int lowBatteryThreshold) {
         this.lowBatteryThreshold = lowBatteryThreshold;
     }
@@ -333,6 +365,11 @@ public class DroneStateManager extends DroneState {
     @Override
     public float getMaxAttitudeAngle() {
         return maxAttitudeAngle;
+    }
+
+    @Override
+    public void updateMaxAttitudeAnge(float angle) {
+        packetConstructor.sendSetAttitudeLimitPacket(angle);
     }
 
     public void setMaxAttitudeAngle(float attitudeAngle) {

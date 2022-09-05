@@ -40,7 +40,7 @@ public abstract class DroneStatus {
      * Low battery warning.
      *
      * @return true when battery is below low battery threshold (probably)
-     * @see PacketSender#sendSetLowBatteryThresholdPacket(short)
+     * @see DroneState#updateLowBatteryThreshold(short)
      */
     public abstract boolean isBatteryLow();
 
@@ -300,7 +300,7 @@ public abstract class DroneStatus {
      * Throw fly timer
      *
      * @return amount of time in which throw fly mode will be active
-     * @see PacketSender#sendThrowTakeoffPacket()
+     * @see Tello#throwTakeOff()
      */
     public abstract int getThrowFlyTimer();
 

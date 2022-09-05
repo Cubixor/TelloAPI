@@ -1,4 +1,6 @@
-package me.cubixor.telloapi.api;
+package me.cubixor.telloapi.api.listeners;
+
+import me.cubixor.telloapi.api.video.VideoInfo;
 
 public interface FileReceiver {
 
@@ -11,12 +13,11 @@ public interface FileReceiver {
      * {@code
      *         ByteArrayInputStream bis = new ByteArrayInputStream(data);
      *         BufferedImage image = ImageIO.read(bis);
-     * }
-     * </pre>
+     * } </pre>
      *
      * @param data photo data combined from all the file chunks sent by a drone,
      *             already arranged, doesn't need further processing
-     * @see PacketSender#sendTakePicturePacket() Send take picture packet
+     * @see VideoInfo#takePicture() Send take picture packet
      */
     void onPhotoReceived(byte[] data);
 }

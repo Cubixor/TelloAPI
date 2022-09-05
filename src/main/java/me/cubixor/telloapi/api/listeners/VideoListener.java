@@ -1,4 +1,4 @@
-package me.cubixor.telloapi.api;
+package me.cubixor.telloapi.api.listeners;
 
 public interface VideoListener {
 

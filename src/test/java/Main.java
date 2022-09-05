@@ -1,6 +1,6 @@
-import me.cubixor.telloapi.api.DroneConnectionListener;
 import me.cubixor.telloapi.api.Tello;
-import me.cubixor.telloapi.api.VideoListener;
+import me.cubixor.telloapi.api.listeners.DroneConnectionListener;
+import me.cubixor.telloapi.api.listeners.VideoListener;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -16,44 +16,36 @@ public class Main {
         pis = new PipedInputStream();
         pos = new PipedOutputStream(pis);
 
-
         tello.addConnectionListener(new DroneConnectionListener() {
             @Override
             public void onConnect() {
                 System.out.println("CONNECT");
 
                 /*tello.getVideoInfo().startVideoStream(500);
-                tello.getPacketSender().sendChangeVideoAspectPacket(VideoInfo.VideoMode.VIDEO);
+                tello.getPacketSender().sendChangeVideoAspectPacket(VideoMode.VIDEO);
 
                 tello.getDroneAxis().setFastMode(false);
 
                 VideoFrameGrabber videoFrameGrabber = new VideoFrameGrabber(pis);
                 videoFrameGrabber.applyFrameSize(tello.getVideoInfo().getVideoMode());
 
+
+
                 ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
 
                 Runnable r1 = () -> {
-                    tello.getPacketSender().sendStartRecordingPacket(true);
-                    System.out.println("recording");
+                    tello.getDroneState().updateHeightLimit((short) 22);
                 };
                 Runnable r2 = () -> {
-                    tello.getPacketSender().sendStartRecordingPacket(false);
-                    System.out.println("not recording");
+                    System.out.println(tello.getDroneState().getHeightLimit());
+
                 };
 
-                Runnable r3 = () -> {
-                    tello.getPacketSender().sendSetDynAdjRatePacket(true);
-                    System.out.println("dyn adj");
-                };
-                Runnable r4 = () -> {
-                    tello.getPacketSender().sendSetDynAdjRatePacket(false);
-                    System.out.println("not dyn adj");
-                };
 
-                executor.schedule(r1, 5, TimeUnit.SECONDS);
-                executor.schedule(r2, 15, TimeUnit.SECONDS);
-                executor.schedule(r3, 20, TimeUnit.SECONDS);
-                executor.schedule(r4, 30, TimeUnit.SECONDS);*/
+                executor.schedule(r1, 3, TimeUnit.SECONDS);
+                executor.schedule(r2, 4, TimeUnit.SECONDS);
+                */
+
             }
 
             @Override

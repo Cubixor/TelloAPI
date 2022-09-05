@@ -1,21 +1,28 @@
 package me.cubixor.telloapi.video;
 
 import me.cubixor.telloapi.Drone;
-import me.cubixor.telloapi.api.VideoInfo;
-import me.cubixor.telloapi.api.VideoListener;
+import me.cubixor.telloapi.PacketConstructor;
+import me.cubixor.telloapi.api.listeners.VideoListener;
+import me.cubixor.telloapi.api.video.BitRate;
+import me.cubixor.telloapi.api.video.SmartVideoMode;
+import me.cubixor.telloapi.api.video.VideoInfo;
+import me.cubixor.telloapi.api.video.VideoMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 
 
-public class VideoManager extends VideoInfo {
+public class VideoManager implements VideoInfo {
 
+    private static final List<Float> exposureValues = new LinkedList<>(Arrays.asList(-3.0f, -2.7f, -2.3f, -2.0f, -1.7f, -1.3f, -1.0f, -0.7f, -0.3f, 0f, 0.3f, 0.7f, 1.0f, 1.3f, 1.7f, 2.0f, 2.3f, 2.7f, 3.0f));
+    private final PacketConstructor packetConstructor;
     private final List<VideoListener> videoListeners = new ArrayList<>();
     private final VideoServer videoServer;
     private BitRate bitRate;
     private float exposure;
-
     private int iFrameInterval;
     private VideoMode videoMode = VideoMode.PHOTO;
     private SmartVideoMode smartVideoMode;
@@ -23,6 +30,15 @@ public class VideoManager extends VideoInfo {
 
     public VideoManager(Drone tello) {
         videoServer = new VideoServer(this, tello);
+        packetConstructor = tello.getPacketSender();
+    }
+
+    public List<VideoListener> getVideoListeners() {
+        return videoListeners;
+    }
+
+    public VideoServer getVideoServer() {
+        return videoServer;
     }
 
     @Override
@@ -30,8 +46,10 @@ public class VideoManager extends VideoInfo {
         return bitRate;
     }
 
+    @Override
     public void setBitRate(BitRate bitRate) {
         this.bitRate = bitRate;
+        packetConstructor.sendSetBitratePacket(bitRate);
     }
 
     @Override
@@ -39,8 +57,23 @@ public class VideoManager extends VideoInfo {
         return exposure;
     }
 
+    @Override
     public void setExposure(float exposure) {
+        if (!exposureValues.contains(exposure)) {
+            throw new IllegalArgumentException("Invalid exposure value!");
+        }
+
+        setExposure(exposureValues.indexOf(exposure) - 9);
+    }
+
+    @Override
+    public void setExposure(int exposure) {
+        if (exposure < -9 || exposure > 9) {
+            throw new IllegalArgumentException("Exposure must not be lower than -9 and greater than 9!");
+        }
+
         this.exposure = exposure;
+        packetConstructor.sendSetExposurePacket(exposure);
     }
 
     @Override
@@ -49,12 +82,29 @@ public class VideoManager extends VideoInfo {
     }
 
     @Override
+    public void setIFrameInterval(int iFrameInterval) {
+        if (iFrameInterval < 1) {
+            throw new IllegalArgumentException("iFrame interval must be greater than 0!");
+        }
+
+        this.iFrameInterval = iFrameInterval;
+
+        ScheduledFuture<?> videoScheduler = getVideoServer().getVideoScheduler();
+        if (videoScheduler != null && !videoScheduler.isCancelled()) {
+            videoScheduler.cancel(true);
+        }
+        getVideoServer().startVideoScheduler();
+    }
+
+    @Override
     public VideoMode getVideoMode() {
         return videoMode;
     }
 
+    @Override
     public void setVideoMode(VideoMode videoMode) {
         this.videoMode = videoMode;
+        packetConstructor.sendChangeVideoAspectPacket(videoMode);
     }
 
     @Override
@@ -75,13 +125,9 @@ public class VideoManager extends VideoInfo {
         this.smartVideoRunning = smartVideoRunning;
     }
 
-
-    public List<VideoListener> getVideoListeners() {
-        return videoListeners;
-    }
-
-    public VideoServer getVideoServer() {
-        return videoServer;
+    @Override
+    public void toggleSmartVideo(SmartVideoMode smartVideoMode, boolean start) {
+        packetConstructor.sendStartSmartVideoPacket(smartVideoMode, start);
     }
 
     @Override
@@ -92,16 +138,14 @@ public class VideoManager extends VideoInfo {
         getVideoServer().startVideoScheduler();
     }
 
+    @Override
+    public void takePicture() {
+        packetConstructor.sendTakePicturePacket();
+    }
 
     @Override
-    public void updateIFrameInterval(int iFrameInterval) {
-        this.iFrameInterval = iFrameInterval;
-
-        ScheduledFuture<?> videoScheduler = getVideoServer().getVideoScheduler();
-        if (videoScheduler != null && !videoScheduler.isCancelled()) {
-            videoScheduler.cancel(true);
-        }
-        getVideoServer().startVideoScheduler();
+    public void setJPEGQuality(boolean highQuality) {
+        packetConstructor.sendJPEGQualityPacket(highQuality);
     }
 
 

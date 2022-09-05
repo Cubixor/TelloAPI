@@ -6,7 +6,7 @@ public interface LogPacketListener {
 
     void onOsdDataPacketReceived(OsdDataPacket osdDataPacket);
 
-    void onUsonciPacketReceived(UsonicPakcet usonicPakcet);
+    void onUSonicPacketReceived(UsonicPakcet usonicPakcet);
 
     void onBatteryInfoPacketReceived(BatteryInfoPacket batteryInfoPacket);
 
