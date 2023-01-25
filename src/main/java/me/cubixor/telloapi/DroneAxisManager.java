@@ -1,16 +1,15 @@
 package me.cubixor.telloapi;
 
 import me.cubixor.telloapi.api.DroneAxis;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class DroneAxisManager implements DroneAxis {
 
-    private final Logger logger = LogManager.getLogger(DroneAxisManager.class);
+    private final Logger logger = Logger.getLogger(DroneAxisManager.class.getName());
     private final Drone tello;
     private float roll = 0;
     private float pitch = 0;

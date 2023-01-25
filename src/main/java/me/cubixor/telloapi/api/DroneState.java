@@ -6,13 +6,6 @@ import java.time.LocalDateTime;
 
 public abstract class DroneState extends DroneStatus {
 
-    /**
-     * Drone speed calculated from {@link DroneStatus#getNorthSpeed()} and {@link DroneStatus#getEastSpeed()}
-     * Value is in meters per second
-     *
-     * @return drone speed in horizontal axis
-     */
-    public abstract int getFlySpeed();
 
     /**
      * @see DroneStatusListener#onLightStrengthPacketReceive(boolean)

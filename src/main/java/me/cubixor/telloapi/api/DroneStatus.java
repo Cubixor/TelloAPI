@@ -2,39 +2,13 @@ package me.cubixor.telloapi.api;
 
 public abstract class DroneStatus {
 
-    protected boolean batteryLow;
-    protected boolean batteryLower;
-    protected int batteryPercentage;
-    protected boolean batteryState;
-    protected int cameraState;
-    protected boolean downVisualState;
-    protected int droneBatteryLeft;
-    protected int droneFlyTimeLeft;
-    protected boolean droneHover;
-    protected boolean eMOpen;
-    protected boolean eMSky;
-    protected boolean eMGround;
-    protected int eastSpeed;
-    protected int electricalMachineryState;
-    protected boolean factoryMode;
-    protected int flyMode;
-    protected int flyTime;
-    protected boolean frontIn;
-    protected boolean frontLSC;
-    protected boolean frontOut;
-    protected boolean gravityState;
-    protected int groundSpeed;
-    protected int height;
-    protected int imuCalibrationState;
-    protected boolean imuState;
-    protected int northSpeed;
-    protected boolean outageRecording;
-    protected boolean powerState;
-    protected boolean pressureState;
-    protected boolean temperatureHeight;
-    protected int throwFlyTimer;
-    protected boolean windState;
-
+    /**
+     * Drone speed calculated from {@link DroneStatus#getNorthSpeed()} and {@link DroneStatus#getEastSpeed()}
+     * Value is in meters per second
+     *
+     * @return drone speed in horizontal axis
+     */
+    public abstract int getFlySpeed();
 
     /**
      * Low battery warning.
@@ -314,38 +288,39 @@ public abstract class DroneStatus {
     @Override
     public String toString() {
         return "DroneStatus{" +
-                "batteryLow=" + batteryLow +
-                ", batteryLower=" + batteryLower +
-                ", batteryPercentage=" + batteryPercentage +
-                ", batteryState=" + batteryState +
-                ", cameraState=" + cameraState +
-                ", downVisualState=" + downVisualState +
-                ", droneBatteryLeft=" + droneBatteryLeft +
-                ", droneFlyTimeLeft=" + droneFlyTimeLeft +
-                ", droneHover=" + droneHover +
-                ", eMOpen=" + eMOpen +
-                ", eMSky=" + eMSky +
-                ", eMgroud=" + eMGround +
-                ", eastSpeed=" + eastSpeed +
-                ", electricalMachineryState=" + electricalMachineryState +
-                ", factoryMode=" + factoryMode +
-                ", flyMode=" + flyMode +
-                ", flyTime=" + flyTime +
-                ", frontIn=" + frontIn +
-                ", frontLSC=" + frontLSC +
-                ", frontOut=" + frontOut +
-                ", gravityState=" + gravityState +
-                ", groundSpeed=" + groundSpeed +
-                ", height=" + height +
-                ", imuCalibrationState=" + imuCalibrationState +
-                ", imuState=" + imuState +
-                ", northSpeed=" + northSpeed +
-                ", outageRecording=" + outageRecording +
-                ", powerState=" + powerState +
-                ", pressureState=" + pressureState +
-                ", temperatureHeight=" + temperatureHeight +
-                ", throwFlyTimer=" + throwFlyTimer +
-                ", windState=" + windState +
+                "batteryLow=" + isBatteryLow() +
+                ", batteryLower=" + isBatteryCritical() +
+                ", batteryPercentage=" + getBatteryPercentage() +
+                ", batteryState=" + isBatteryError() +
+                ", cameraState=" + isCameraError() +
+                ", downVisualState=" + isDownwardVisionError() +
+                ", droneBatteryLeft=" + getDroneBatteryLeft() +
+                ", droneFlyTimeLeft=" + getDroneFlyTimeLeft() +
+                ", droneHover=" + isDroneHovering() +
+                ", eMOpen=" + iseMOpen() +
+                ", eMSky=" + iseMSky() +
+                ", eMgroud=" + iseMGround() +
+                ", eastSpeed=" + getEastSpeed() +
+                ", electricalMachineryState=" + getElectricalMachineryState() +
+                ", factoryMode=" + isInFactoryMode() +
+                ", flyMode=" + getFlyMode() +
+                ", flyTime=" + getFlyTime() +
+                ", frontIn=" + isFrontIn() +
+                ", frontLSC=" + isFrontLSC() +
+                ", frontOut=" + isFrontOut() +
+                ", gravityState=" + isGravityError() +
+                ", groundSpeed=" + getGroundSpeed() +
+                ", height=" + getHeight() +
+                ", imuCalibrationState=" + getImuCalibrationState() +
+                ", imuState=" + isImuError() +
+                ", northSpeed=" + getNorthSpeed() +
+                ", outageRecording=" + isOutageRecording() +
+                ", powerState=" + isPowerError() +
+                ", pressureState=" + isPressureError() +
+                ", temperatureHeight=" + isOverheat() +
+                ", throwFlyTimer=" + getThrowFlyTimer() +
+                ", windState=" + isTooWindy() +
+                ", height=" + getHeight() +
                 '}';
     }
 }

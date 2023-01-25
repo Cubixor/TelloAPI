@@ -9,19 +9,18 @@ import me.cubixor.telloapi.photo.File;
 import me.cubixor.telloapi.photo.FileChunk;
 import me.cubixor.telloapi.photo.FilePiece;
 import me.cubixor.telloapi.utils.ByteUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 public class PacketDecoder {
 
     private final Drone tello;
-    private final Logger logger = LogManager.getLogger(PacketDecoder.class);
+    private final Logger logger = Logger.getLogger(PacketDecoder.class.getName());
 
     private final LogDataManager logDataManager;
 
@@ -161,7 +160,7 @@ public class PacketDecoder {
                 break;
             }
             default: {
-                logger.warn("Unknown packet received! Size: " + payload.length + " Data: " + ByteUtils.bytesToHex(payload));
+                logger.warning("Unknown packet received! Size: " + payload.length + " Data: " + ByteUtils.bytesToHex(payload));
                 break;
             }
         }

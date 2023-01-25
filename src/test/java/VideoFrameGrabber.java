@@ -10,10 +10,10 @@ import java.io.PipedInputStream;
 
 public class VideoFrameGrabber {
 
-    private CustomFFmpegFrameGrabber frameGrabber;
     public static final Java2DFrameConverter conv = new Java2DFrameConverter();
     public static final MyFrame jFrame = new MyFrame();
     public static final Graphics g = jFrame.getGraphics();
+    private CustomFFmpegFrameGrabber frameGrabber;
     private final Thread videoThread = new Thread(() -> {
         try {
             frameGrabber.start();

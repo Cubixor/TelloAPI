@@ -76,6 +76,7 @@ public class Main {
             }
         });
     }
+
     public static BufferedImage decodeImage(byte[] data) {
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
         BufferedImage image = null;

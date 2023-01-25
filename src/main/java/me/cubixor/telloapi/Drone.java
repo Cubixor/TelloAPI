@@ -9,8 +9,6 @@ import me.cubixor.telloapi.api.listeners.VideoListener;
 import me.cubixor.telloapi.logs.LogPacketListener;
 import me.cubixor.telloapi.photo.File;
 import me.cubixor.telloapi.video.VideoManager;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,10 +16,11 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class Drone extends Tello {
 
-    private final Logger logger = LogManager.getLogger(PacketDecoder.class);
+    private final Logger logger = Logger.getLogger(PacketDecoder.class.getName());
     private final UdpServer udpServer;
     private final VideoManager videoManager;
     private final PacketConstructor packetSender;

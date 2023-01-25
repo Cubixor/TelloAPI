@@ -9,11 +9,43 @@ import java.time.LocalDateTime;
 public class DroneStateManager extends DroneState {
 
     private final PacketConstructor packetConstructor;
+
+    private int flySpeed;
+    private boolean batteryLow;
+    private boolean batteryLower;
+    private int batteryPercentage;
+    private boolean batteryState;
+    private int cameraState;
+    private boolean downVisualState;
+    private int droneBatteryLeft;
+    private int droneFlyTimeLeft;
+    private boolean droneHover;
+    private boolean eMOpen;
+    private boolean eMSky;
+    private boolean eMGround;
+    private int eastSpeed;
+    private int electricalMachineryState;
+    private boolean factoryMode;
+    private int flyMode;
+    private int flyTime;
+    private boolean frontIn;
+    private boolean frontLSC;
+    private boolean frontOut;
+    private boolean gravityState;
+    private int groundSpeed;
+    private int height;
+    private int imuCalibrationState;
+    private boolean imuState;
+    private int northSpeed;
+    private boolean outageRecording;
+    private boolean powerState;
+    private boolean pressureState;
+    private boolean temperatureHeight;
+    private int throwFlyTimer;
+    private boolean windState;
     private boolean lightOK;
     private int wifiStrength;
     private int wifiInterference;
-    private int flySpeed;
-
     private String wifiSSID;
     private String wifiPassword;
     private String wifiRegion;
@@ -339,13 +371,13 @@ public class DroneStateManager extends DroneState {
         return heightLimit;
     }
 
+    public void setHeightLimit(int heightLimit) {
+        this.heightLimit = heightLimit;
+    }
+
     @Override
     public void updateHeightLimit(short height) {
         packetConstructor.sendSetHeightLimitPacket(height);
-    }
-
-    public void setHeightLimit(int heightLimit) {
-        this.heightLimit = heightLimit;
     }
 
     @Override
@@ -353,13 +385,13 @@ public class DroneStateManager extends DroneState {
         return lowBatteryThreshold;
     }
 
+    public void setLowBatteryThreshold(int lowBatteryThreshold) {
+        this.lowBatteryThreshold = lowBatteryThreshold;
+    }
+
     @Override
     public void updateLowBatteryThreshold(short battery) {
         packetConstructor.sendSetLowBatteryThresholdPacket(battery);
-    }
-
-    public void setLowBatteryThreshold(int lowBatteryThreshold) {
-        this.lowBatteryThreshold = lowBatteryThreshold;
     }
 
     @Override
@@ -367,13 +399,13 @@ public class DroneStateManager extends DroneState {
         return maxAttitudeAngle;
     }
 
+    public void setMaxAttitudeAngle(float attitudeAngle) {
+        this.maxAttitudeAngle = attitudeAngle;
+    }
+
     @Override
     public void updateMaxAttitudeAnge(float angle) {
         packetConstructor.sendSetAttitudeLimitPacket(angle);
-    }
-
-    public void setMaxAttitudeAngle(float attitudeAngle) {
-        this.maxAttitudeAngle = attitudeAngle;
     }
 
 }

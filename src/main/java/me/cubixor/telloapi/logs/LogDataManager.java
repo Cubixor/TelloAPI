@@ -5,8 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import me.cubixor.telloapi.Drone;
 import me.cubixor.telloapi.logs.logpackets.*;
 import me.cubixor.telloapi.utils.ByteUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -17,10 +15,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class LogDataManager {
 
-    private final Logger logger = LogManager.getLogger(LogDataManager.class);
+    private final Logger logger = Logger.getLogger(LogDataManager.class.getName());
     private final Class<?>[] logPacketClasses = new Class<?>[]{
             OsdDataPacket.class,
             UsonicPakcet.class,
@@ -160,13 +159,13 @@ public class LogDataManager {
         while (pos < data.length) {
             byte magic = data[pos];
             if (magic != 0x55) {
-                logger.warn("Invalid log data packet - magic byte not equal to 0x55! Data: " + ByteUtils.bytesToHex(data));
+                logger.warning("Invalid log data packet - magic byte not equal to 0x55! Data: " + ByteUtils.bytesToHex(data));
                 return;
             }
             int len = data[pos + 1] & 0xff;
             byte alwaysZero = data[pos + 2];
             if (alwaysZero != 0) {
-                logger.warn("Invalid log data packet - always zero byte not equal to 0! Data: " + ByteUtils.bytesToHex(data));
+                logger.warning("Invalid log data packet - always zero byte not equal to 0! Data: " + ByteUtils.bytesToHex(data));
                 return;
             }
 
@@ -212,7 +211,7 @@ public class LogDataManager {
 
             Class<?> logPacketClass = matchLogPacketClass(id);
             if (logPacketClass == null) {
-                logger.warn("Unknown log packet ID! ID: " + id + " Length: " + (len - 12) + " Data: " + ByteUtils.bytesToHex(dataDecrypted));
+                logger.warning("Unknown log packet ID! ID: " + id + " Length: " + (len - 12) + " Data: " + ByteUtils.bytesToHex(dataDecrypted));
                 continue;
             }
 

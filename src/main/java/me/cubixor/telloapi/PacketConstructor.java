@@ -6,17 +6,16 @@ import me.cubixor.telloapi.api.video.SmartVideoMode;
 import me.cubixor.telloapi.api.video.VideoMode;
 import me.cubixor.telloapi.utils.ByteUtils;
 import me.cubixor.telloapi.utils.Crc;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.time.LocalDateTime;
+import java.util.logging.Logger;
 
 public class PacketConstructor {
 
     private final Drone tello;
-    private final Logger logger = LogManager.getLogger(PacketConstructor.class);
+    private final Logger logger = Logger.getLogger(PacketConstructor.class.getName());
 
     public PacketConstructor(Drone tello) {
         this.tello = tello;
@@ -106,7 +105,7 @@ public class PacketConstructor {
 
         tello.getUdpServer().sendPacket(msg);
 
-        logger.warn("Sent emergency packet!");
+        logger.warning("Sent emergency packet!");
     }
 
     /**
