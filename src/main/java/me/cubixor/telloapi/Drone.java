@@ -38,9 +38,9 @@ public class Drone extends Tello {
     public Drone(int reconnectMillis, int timeoutSecs) {
 
         udpServer = new UdpServer(this);
+        packetSender = new PacketConstructor(this);
         videoManager = new VideoManager(this);
         droneAxisManager = new DroneAxisManager(this);
-        packetSender = new PacketConstructor(this);
         droneStateManager = new DroneStateManager(this);
 
         startConnectionThreads(reconnectMillis, timeoutSecs);
