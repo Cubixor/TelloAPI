@@ -160,6 +160,36 @@ public class Drone extends Tello {
         logPacketListeners.add(logPacketListener);
     }
 
+    @Override
+    public void removeConnectionListener(DroneConnectionListener droneConnectionListener) {
+        this.droneConnectionListeners.remove(droneConnectionListener);
+    }
+
+    @Override
+    public void removeDroneStatusListener(DroneStatusListener droneStatusListener) {
+        droneStatusListeners.remove(droneStatusListener);
+    }
+
+    @Override
+    public void removeVideoListener(VideoListener videoListener) {
+        videoManager.getVideoListeners().remove(videoListener);
+    }
+
+    @Override
+    public void removeFileListener(FileReceiver fileReceiver) {
+        fileReceivers.remove(fileReceiver);
+    }
+
+    @Override
+    public void removeFileMonitor(FileMonitor fileMonitor) {
+        fileMonitors.remove(fileMonitor);
+    }
+
+    @Override
+    public void removeLogPacketListener(LogPacketListener logPacketListener) {
+        logPacketListeners.remove(logPacketListener);
+    }
+
     public PacketConstructor getPacketSender() {
         return packetSender;
     }

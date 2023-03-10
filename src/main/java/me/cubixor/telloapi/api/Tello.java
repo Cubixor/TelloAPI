@@ -53,6 +53,36 @@ public abstract class Tello {
      */
     public abstract void addLogPacketListener(LogPacketListener logPacketListener);
 
+    /**
+     * @see DroneConnectionListener
+     */
+    public abstract void removeConnectionListener(DroneConnectionListener droneConnectionListener);
+
+    /**
+     * @see DroneStatusListener
+     */
+    public abstract void removeDroneStatusListener(DroneStatusListener droneStatusListener);
+
+    /**
+     * @see VideoListener
+     */
+    public abstract void removeVideoListener(VideoListener videoListener);
+
+    /**
+     * @see FileReceiver
+     */
+    public abstract void removeFileListener(FileReceiver fileReceiver);
+
+    /**
+     * @see FileMonitor
+     */
+    public abstract void removeFileMonitor(FileMonitor fileMonitor);
+
+    /**
+     * @see LogPacketListener
+     */
+    public abstract void removeLogPacketListener(LogPacketListener logPacketListener);
+
 
     public abstract DroneState getDroneState();
 
