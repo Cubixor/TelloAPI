@@ -1,10 +1,7 @@
 package me.cubixor.telloapi.api;
 
 import me.cubixor.telloapi.Drone;
-import me.cubixor.telloapi.api.listeners.DroneConnectionListener;
-import me.cubixor.telloapi.api.listeners.DroneStatusListener;
-import me.cubixor.telloapi.api.listeners.FileReceiver;
-import me.cubixor.telloapi.api.listeners.VideoListener;
+import me.cubixor.telloapi.api.listeners.*;
 import me.cubixor.telloapi.api.video.VideoInfo;
 import me.cubixor.telloapi.logs.LogPacketListener;
 
@@ -45,6 +42,11 @@ public abstract class Tello {
      * @see FileReceiver
      */
     public abstract void addFileListener(FileReceiver fileReceiver);
+
+    /**
+     * @see FileMonitor
+     */
+    public abstract void addFileMonitor(FileMonitor fileMonitor);
 
     /**
      * @see LogPacketListener

@@ -2,10 +2,7 @@ package me.cubixor.telloapi;
 
 import me.cubixor.telloapi.api.FlipDirection;
 import me.cubixor.telloapi.api.Tello;
-import me.cubixor.telloapi.api.listeners.DroneConnectionListener;
-import me.cubixor.telloapi.api.listeners.DroneStatusListener;
-import me.cubixor.telloapi.api.listeners.FileReceiver;
-import me.cubixor.telloapi.api.listeners.VideoListener;
+import me.cubixor.telloapi.api.listeners.*;
 import me.cubixor.telloapi.logs.LogPacketListener;
 import me.cubixor.telloapi.photo.File;
 import me.cubixor.telloapi.video.VideoManager;
@@ -28,6 +25,7 @@ public class Drone extends Tello {
     private final DroneAxisManager droneAxisManager;
     private final List<DroneStatusListener> droneStatusListeners = new ArrayList<>();
     private final List<FileReceiver> fileReceivers = new ArrayList<>();
+    private final List<FileMonitor> fileMonitors = new ArrayList<>();
     private final HashMap<Integer, File> pendingFiles = new HashMap<>();
     private final List<DroneConnectionListener> droneConnectionListeners = new ArrayList<>();
     private final List<LogPacketListener> logPacketListeners = new ArrayList<>();
@@ -119,6 +117,10 @@ public class Drone extends Tello {
         return fileReceivers;
     }
 
+    public List<FileMonitor> getFileMonitors() {
+        return fileMonitors;
+    }
+
     public UdpServer getUdpServer() {
         return udpServer;
     }
@@ -146,6 +148,11 @@ public class Drone extends Tello {
     @Override
     public void addFileListener(FileReceiver fileReceiver) {
         fileReceivers.add(fileReceiver);
+    }
+
+    @Override
+    public void addFileMonitor(FileMonitor fileMonitor) {
+        fileMonitors.add(fileMonitor);
     }
 
     @Override

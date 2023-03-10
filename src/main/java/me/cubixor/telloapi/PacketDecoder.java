@@ -2,6 +2,7 @@ package me.cubixor.telloapi;
 
 import me.cubixor.telloapi.api.DroneStatus;
 import me.cubixor.telloapi.api.listeners.DroneStatusListener;
+import me.cubixor.telloapi.api.listeners.FileMonitor;
 import me.cubixor.telloapi.api.listeners.FileReceiver;
 import me.cubixor.telloapi.api.video.SmartVideoMode;
 import me.cubixor.telloapi.logs.LogDataManager;
@@ -348,6 +349,9 @@ public class PacketDecoder {
             if (filePiece.getFileChunks()[fileChunkID - 8 * filePieceID] == null) {
                 filePiece.getFileChunks()[fileChunkID - 8 * filePieceID] = new FileChunk(fileChunkID, fileChunkLength, data);
                 file.addCurrentSize(fileChunkLength);
+                for (FileMonitor fileMonitor : tello.getFileMonitors()) {
+                    fileMonitor.onPhotoSending(file.getPercentageDone());
+                }
             }
         }
 

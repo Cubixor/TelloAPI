@@ -9,10 +9,12 @@ public class File {
     private final HashMap<Integer, FilePiece> filePieces = new HashMap<>();
     private int currentSize;
     private boolean received;
+    private float percentageDone;
 
     public File(int fileID, int fileSize) {
         this.fileID = fileID;
         this.fileSize = fileSize;
+        percentageDone = 0;
     }
 
     public byte[] toByteArray() {
@@ -51,6 +53,7 @@ public class File {
 
     public void addCurrentSize(int currentSize) {
         this.currentSize += currentSize;
+        this.percentageDone = ((float) this.currentSize) / ((float) fileSize);
     }
 
     public boolean isReceived() {
@@ -59,6 +62,10 @@ public class File {
 
     public void setReceived(boolean received) {
         this.received = received;
+    }
+
+    public float getPercentageDone() {
+        return percentageDone;
     }
 
     @Override
