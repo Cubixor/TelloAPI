@@ -407,7 +407,12 @@ public class PacketDecoder {
 
     private void decodeLogDataPacket(byte[] payload) {
         byte[] data = Arrays.copyOfRange(payload, 1, payload.length);
-        logDataManager.decodeLog(data);
+        try {
+            logDataManager.decodeLog(data);
+        } catch (Exception e) {
+            logger.warning("Error parsing log data packet!");
+            e.printStackTrace();
+        }
 
         //LogManager.getInstance().writeToFile(data);
     }
@@ -419,7 +424,12 @@ public class PacketDecoder {
 
         boolean done = payload.length == 8 && payload[7] == 0;
         if (!done) {
-            logDataManager.decodeLog(data);
+            try {
+                logDataManager.decodeLog(data);
+            } catch (Exception e) {
+                logger.warning("Error parsing log config packet!");
+                e.printStackTrace();
+            }
         } else {
             logDataManager.setComplete();
         }

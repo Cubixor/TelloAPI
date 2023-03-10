@@ -153,7 +153,7 @@ public class LogDataManager {
         }
     }
 
-    public void decodeLog(byte[] data) {
+    public void decodeLog(byte[] data) throws RuntimeException {
         int pos = 0;
 
         while (pos < data.length) {
